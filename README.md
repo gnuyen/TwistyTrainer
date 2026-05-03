@@ -1,16 +1,16 @@
-# F2LTrainer 🧩
+# CFOP Trainer 🧩
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Svelte](https://img.shields.io/badge/Svelte-5.0-orange.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)
 
-**A speedcubing training application for F2L, featuring 3D cube rendering, algorithmic training, and smart cube integration.**
+**A comprehensive speedcubing training application for CFOP (F2L, OLL, PLL), featuring 2D/3D cube rendering, algorithmic training, and smart cube integration.**
 
-> 🚀 **[Live Demo](https://f2l-trainer.top/)**
+> 🚀 **[Live Demo](https://gnuyen.github.io/TwistyTrainer/)**
 
 ## ✨ Features
 
-- **🎯 Specialized Training:** Dedicated modes for learning and drilling F2L algorithms.
+- **🎯 Specialized Training:** Dedicated modes for learning and drilling F2L, OLL, and PLL algorithms.
 - **🛜 Bluetooth Smart Cube Support:** Connect your smart cube directly to get real-time feedback and automatic timing.
 - **🧊 3D Visualization:** Interactive 3D cube player powered by `cubing.js`.
 - **📊 Statistics:** Track your progress with detailed charts and session history.
@@ -49,11 +49,11 @@ This CFOP Trainer was inspired by JPerms [OLL Trainer](https://jperm.net/algs/ol
 
 ## ❓ Further Help
 
-Feel free to create an [issue](https://github.com/Dave2ooo/F2LTrainer/issues) if you need any help, have ideas for improvement or find any bugs. I'm happy to help.
+Feel free to create an [issue](https://github.com/gnuyen/TwistyTrainer/issues) if you need any help, have ideas for improvement or find any bugs. I'm happy to help.
 
 ## 🤝 Contributing
 
-Feel free to tackle any [Issue](https://github.com/Dave2ooo/F2LTrainer/issues) on your own. If you want to change something that is not covered in an issue, please create an issue first, to make sure the pull request will be approved.
+Feel free to tackle any [Issue](https://github.com/gnuyen/TwistyTrainer/issues) on your own. If you want to change something that is not covered in an issue, please create an issue first, to make sure the pull request will be approved.
 
 ---
 
@@ -99,8 +99,8 @@ npm install -g pnpm
 Clone this project from GitHub and navigate into it:
 
 ```bash
-git clone https://github.com/Dave2ooo/F2LTrainer.git
-cd F2LTrainer
+git clone https://github.com/gnuyen/TwistyTrainer.git
+cd TwistyTrainer
 ```
 
 ---
