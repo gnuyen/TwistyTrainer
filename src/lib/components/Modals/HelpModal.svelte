@@ -42,7 +42,7 @@
 				{/snippet}
 				<div class="text-md space-y-3 px-3 py-1 text-gray-700 dark:text-gray-300">
 					<p>
-						<strong>F2L Trainer</strong> helps you master the First Two Layers (F2L) step of the CFOP
+						<strong>CFOP Trainer</strong> helps you master the First Two Layers (F2L) step of the CFOP
 						method for solving a Rubik's Cube. Track your learning progress, discover algorithms, and
 						practice them until they become muscle memory.
 					</p>
@@ -270,7 +270,7 @@
 									target="_blank"
 									class="underline hover:text-blue-700 dark:hover:text-blue-100"
 									>Bluefy - Web Bluetooth Browser</A
-								> from the App Store and open F2L Trainer inside it.
+								> from the App Store and open CFOP Trainer inside it.
 							</p>
 						</div>
 					</div>

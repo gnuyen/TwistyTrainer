@@ -1,0 +1,25 @@
+import type { AlgorithmCollection } from '..';
+
+export const pllFullAlgorithms: AlgorithmCollection = {
+    1: ["y2 M2 U M U2 M' U M2","R U R' U R' U' R2 U' R' U R' U R","y R2 U' S' U2 S U' R2","y2 R U' R U R U R U' R' U' R2"],
+    2: ["y2 M2 U' M U2 M' U' M2","R' U R' U' R' U' R' U R U R2","R2' U R U R' U' R3 U' R' U R'","y2 R2 U R U R' U' R' U' R' U R'"],
+    3: ["M' U' M2 U' M2 U' M' U2 M2","M2 U M2 U M' U2 M2 U2 M'","y M2 U' M2 U' M' U2 M2 U2 M'","y M' U M2 U M2 U M' U2 M2"],
+    4: ["M2 U' M2 U2 M2 U' M2","M2 U M2 U2 M2 U M2","R2 S2 R2 U' R2 S2 R2","M2 U2 M2 U M2 U2 M2"],
+    5: ["x R' U R' D2 R U' R' D2 R2 x'","y' x L2 D2 L' U' L D2 L' U L'","l' U R' D2 R U' R' D2 R2 x'","y x' R2 D2 R' U' R D2 R' U R' x"],
+    6: ["x R2 D2 R U R' D2 R U' R x'","y' x L U' L D2 L' U L D2 L2","y x' R U' R D2 R' U R D2 R2 x","R' B' R U' R D R' U R D' R2 B R"],
+    7: ["y x' R U' R' D R U R' D' R U R' D R U' R' D' x","y R' U' R' D' R U' R' D R U R' D' R U R' D R2","R2 U F' R' U R U' R' U R U' R' U R U' F U' R2","y x' L' U L D' L' U' L D L' U' L D' L' U L D"],
+    8: ["R U R' U' R' F R2 U' R' U' R U R' F'","l b d' L' U' F U2 L' U' L' U L U' f' S M r u E U' R'","R U R' U' R' F R2 U' R' U F' L' U L","R2 u R2 u' R2 F2 u' F2 u F2"],
+    9: ["y R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R","y R' F R f' R' F R2 U R' U' R' F' R2 U R' S","R' U R U' R2 F' U' F U R F R' F' R2","y R2 F R F' R' U' F' U F R2 U R' U' R"],
+    10: ["y2 x R2 F R F' R U2 r' U r U2 x'","y R' U L' U2 R U' R' U2 R L","L' U' L F L' U' L U L F' L2 U L","R U' L' U R' U2 L U' L' U2 L"],
+    11: ["R U R' F' R U R' U' R' F R2 U' R'","R U2 R' U' R U2 L' U R' U' L","r' F R F' r U2 R' U R U2 R'","L' U R U' L U2 R' U R U2 R'"],
+    12: ["y R U' R' U' R U R D R' U' R D' R' U2 R'","y R U R' F' R U2 R' U2 R' F R U R U2 R'","L U2 L' U2 L F' L' U' L U L F L2","y R U' R' U' R U R' U R' D' R U' R' D R2 U R'"],
+    13: ["R' U2 R U2 R' F R U R' U' R' F' R2","y R2 F R U R U' R' F' R U2 R' U2 R","R' U2 R' D' R U' R' D R U R U' R' U' R","y R' U R U R' U' R' D' R U R' D R U2 R"],
+    14: ["R' U R' U' R D' R' D R' U D' R2 U' R2 D R2","R' U R U' R' f' U' R U2 R' U' R U' R' f R","y R U' R U R' D R D' R U' D R2 U R2 D' R2","R' U R' U' y R' F' R2 U' R' U R' F R F"],
+    15: ["F R U' R' U' R U R' F' R U R' U' R' F R F'","F R' F R2 U' R' U' R U R' F' R U R' U' F'","R2 U' R2 U' R2 U F U F' R2 F U' F'","F R' F' R U R U' R2 U' R U R f' U' f"],
+    16: ["R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'","F' R U R' U' R' F R2 F U' R' U' R U F' R'","R F U' R' U R U F' R2 F' R U R U' R' F","r' D r U2 r' D r U2 r' D r U2 r' D r U2 r' D r"],
+    17: ["R' U R U' R' F' U' F R U R' F R' F' R U' R","r' D' F r U' r' F' D r2 U r' U' r' F r F'","R' U L' U2 R U' L R' U L' U2 R U' L","R' U R U' R' F' U' F R U R' U' R U' f R f'"],
+    18: ["R2 U R' U R' U' R U' R2 D U' R' U R D'","R2 u R' U R' U' R u' R2 F' U F","y R U R' F' R U R' U' R' F R U' R' F R2 U' R' U' R U R' F'","D' R2 U R' U R' U' R U' R2 U' D R' U R"],
+    19: ["D R' U' R U D' R2 U R' U R U' R U' R2","R' U' R U D' R2 U R' U R U' R U' R2 D","y F' U' F R2 u R' U R U' R u' R2","R' d' F R2 u R' U R U' R u' R2"],
+    20: ["y2 R2 F2 R U2 R U2 R' F R U R' U' R' F R2","R2 U' R U' R U R' U R2 D' U R U' R' D","D R2 U' R U' R U R' U R2 D' U R U' R'","R2 u' R U' R U R' u R2 f R' f'"],
+    21: ["R U R' U' D R2 U' R U' R' U R' U R2 D'","D' R U R' U' D R2 U' R U' R' U R' U R2","R U R' y' R2 u' R U' R' U R' u R2","y R2 F' R U R U' R' F' R U2 R' U2 R' F2 R2"],
+} as const;

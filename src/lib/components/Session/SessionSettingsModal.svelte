@@ -137,15 +137,27 @@
 							{#if settings.caseMode === 'group'}
 								<div class="mt-3 ml-6 space-y-4 border-t border-blue-200 pt-3 dark:border-blue-800">
 									<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-										<div>
-											<Label class="section-label mb-2">F2L Groups</Label>
-											<div class="space-y-2">
-												{#each GROUP_IDS as groupId}
-													<Checkbox bind:checked={settings.trainGroupSelection[groupId]}
-														>{GROUP_DEFINITIONS[groupId].name}</Checkbox
-													>
-												{/each}
-											</div>
+										<div class="space-y-4">
+											{#each ['F2L', 'OLL', 'PLL'] as step}
+												<div>
+													<Label class="section-label mb-2">{step} Groups</Label>
+													<div class="space-y-2">
+														{#each GROUP_IDS.filter((id) => (step === 'F2L' && !id
+																		.toLowerCase()
+																		.includes('oll') && !id
+																		.toLowerCase()
+																		.includes('pll')) || (step === 'OLL' && id
+																		.toLowerCase()
+																		.includes('oll')) || (step === 'PLL' && id
+																		.toLowerCase()
+																		.includes('pll'))) as groupId}
+															<Checkbox bind:checked={settings.trainGroupSelection[groupId]}
+																>{GROUP_DEFINITIONS[groupId].name}</Checkbox
+															>
+														{/each}
+													</div>
+												</div>
+											{/each}
 										</div>
 										<div>
 											<Label class="section-label mb-2">Training State</Label>

@@ -15,6 +15,15 @@ export const OPPOSITE_COLOR = {
 	blue: 'green'
 } as const satisfies Record<StickerColor, StickerColor>;
 
+export const CUBING_JS_COLORS: Record<StickerColor, string> = {
+	yellow: 'yellow',
+	white: 'white',
+	red: 'red',
+	orange: 'orange',
+	green: 'limegreen',
+	blue: 'rgb(34, 102, 255)'
+};
+
 type EdgeIndexMap = Record<StickerColor, Partial<Record<StickerColor, number>>>;
 
 type CornerIndexMap = Record<

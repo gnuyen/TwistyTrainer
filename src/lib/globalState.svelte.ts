@@ -1,5 +1,5 @@
 import type { GlobalState } from '$lib/types/globalState';
-import { GROUP_DEFINITIONS, GROUP_IDS, type GroupId } from './types/group';
+import { GROUP_DEFINITIONS, GROUP_IDS, type GroupId, type StepId } from './types/group';
 import { loadFromLocalStorage } from './utils/localStorage';
 
 export const GLOBAL_STATE_STORAGE_KEY = 'globalState';
@@ -17,6 +17,7 @@ const createCollapsedCategories = (): Record<GroupId, boolean[]> =>
 interface EphemeralState {
 	view: 'select' | 'train';
 	categoriesOpenedObj: Record<GroupId, boolean[]>;
+	selectedStep: StepId;
 	selectedGroup: GroupId;
 	playOnAlgChange: boolean;
 	showDetails: boolean;
@@ -33,6 +34,7 @@ interface EphemeralState {
 const defaultEphemeralState: EphemeralState = {
 	view: 'select',
 	categoriesOpenedObj: createCollapsedCategories(),
+	selectedStep: 'F2L',
 	selectedGroup: 'basic',
 	playOnAlgChange: true,
 	showDetails: false,
@@ -47,12 +49,16 @@ const defaultEphemeralState: EphemeralState = {
 };
 
 const persistedEphemeralState =
-	loadFromLocalStorage<Partial<EphemeralState>>(GLOBAL_STATE_STORAGE_KEY);
+	loadFromLocalStorage<Partial<EphemeralState>>(GLOBAL_STATE_STORAGE_KEY) || {};
 
-// Initialize ephemeral state
+// Initialize ephemeral state, merging nested objects like categoriesOpenedObj carefully
 const ephemeralState = $state<EphemeralState>({
 	...defaultEphemeralState,
-	...(persistedEphemeralState || {})
+	...persistedEphemeralState,
+	categoriesOpenedObj: {
+		...defaultEphemeralState.categoriesOpenedObj,
+		...(persistedEphemeralState.categoriesOpenedObj || {})
+	}
 });
 
 // Create a proxy object that implements GlobalState interface
@@ -74,6 +80,13 @@ export const globalState: GlobalState = {
 	},
 	set categoriesOpenedObj(v) {
 		ephemeralState.categoriesOpenedObj = v;
+	},
+
+	get selectedStep() {
+		return ephemeralState.selectedStep;
+	},
+	set selectedStep(v) {
+		ephemeralState.selectedStep = v;
 	},
 
 	get selectedGroup() {

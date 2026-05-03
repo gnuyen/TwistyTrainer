@@ -17,21 +17,33 @@ const TRAIN_STATE_IDENTIFIER: Readonly<Record<GroupId, string>> = {
 	basic: 'sb',
 	basicBack: 'sbb',
 	advanced: 'sa',
-	expert: 'se'
+	expert: 'se',
+	oll2Look: 'so2',
+	ollFull: 'sof',
+	pll2Look: 'sp2',
+	pllFull: 'spf'
 };
 
 const ALGORITHM_SELECTION_IDENTIFIER: Readonly<Record<GroupId, string>> = {
 	basic: 'ab',
 	basicBack: 'abb',
 	advanced: 'aa',
-	expert: 'ae'
+	expert: 'ae',
+	oll2Look: 'ao2',
+	ollFull: 'aof',
+	pll2Look: 'ap2',
+	pllFull: 'apf'
 };
 
 const CUSTOM_ALGORITHM_IDENTIFIER: Readonly<Record<GroupId, string>> = {
 	basic: 'cb',
 	basicBack: 'cbb',
 	advanced: 'ca',
-	expert: 'ce'
+	expert: 'ce',
+	oll2Look: 'co2',
+	ollFull: 'cof',
+	pll2Look: 'cp2',
+	pllFull: 'cpf'
 };
 
 // Create index mappings for encoding/decoding

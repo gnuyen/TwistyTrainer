@@ -1,8 +1,16 @@
 import type { CaseState } from './caseState';
 import type { StickerHidden } from './stickering';
 
-export type GroupId = 'basic' | 'basicBack' | 'advanced' | 'expert';
-export const GROUP_IDS: readonly GroupId[] = ['basic', 'basicBack', 'advanced', 'expert'];
+export type GroupId = 'basic' | 'basicBack' | 'advanced' | 'expert' | 'oll2Look' | 'ollFull' | 'pll2Look' | 'pllFull';
+export const GROUP_IDS: readonly GroupId[] = ['basic', 'basicBack', 'advanced', 'expert', 'oll2Look', 'ollFull', 'pll2Look', 'pllFull'];
+
+export type StepId = 'F2L' | 'OLL' | 'PLL';
+export const STEP_IDS: readonly StepId[] = ['F2L', 'OLL', 'PLL'];
+export const STEP_TO_GROUPS: Record<StepId, GroupId[]> = {
+	F2L: ['basic', 'basicBack', 'advanced', 'expert'],
+	OLL: ['oll2Look', 'ollFull'],
+	PLL: ['pll2Look', 'pllFull']
+};
 
 export type CaseId = number; // 1-based, matches existing assets
 
@@ -29,6 +37,7 @@ export interface GroupDefinition {
 	readonly ignoreAUF?: readonly CaseId[];
 	readonly caseNumberMapping?: Readonly<Record<CaseId, string>>;
 	readonly piecesToHide?: Readonly<Record<number, StickerHidden>>;
+	readonly hashOllMapping?: Readonly<Record<CaseId, string>>;
 }
 
 const BASIC_DEFINITION: GroupDefinition = {
@@ -212,11 +221,125 @@ const EXPERT_DEFINITION: GroupDefinition = {
 	ignoreAUF: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
 } as const;
 
+const OLL_2LOOK_DEFINITION: GroupDefinition = {
+	id: 'oll2Look',
+	name: '2-Look OLL',
+	editName: 'OLL 2-Look',
+	numberCases: 10,
+	categories: [
+		{ name: 'Edge Orientation', cases: [1, 2, 3] },
+		{ name: 'Corner Orientation', cases: [4, 5, 6, 7, 8, 9, 10] }
+	],
+	hashOllMapping: {
+		1: 'PD',
+		2: 'URB',
+		3: 'URL',
+		4: 'SO',
+		5: 'AO',
+		6: 'PO',
+		7: 'UO',
+		8: 'TO',
+		9: 'LO',
+		10: 'HO'
+	}
+} as const;
+
+const OLL_FULL_DEFINITION: GroupDefinition = {
+	id: 'ollFull',
+	name: 'Full OLL',
+	editName: 'OLL Full',
+	numberCases: 57,
+	categories: [
+		{ name: 'Dot', cases: [1, 2, 18, 19, 17, 20, 3, 4] },
+		{ name: 'Square Shape', cases: [5, 6] },
+		{ name: 'Small Lightning Bolt', cases: [7, 8, 11, 12] },
+		{ name: 'Fish Shape', cases: [9, 10, 35, 37] },
+		{ name: 'Knight Move Shape', cases: [13, 14, 15, 16] },
+		{ name: 'Awkward Shape', cases: [29, 30, 41, 42] },
+		{ name: 'C Shape', cases: [34, 46] },
+		{ name: 'W Shape', cases: [36, 38] },
+		{ name: 'Corners Oriented', cases: [28, 57] },
+		{ name: 'Cross', cases: [21, 22, 23, 24, 25, 26, 27] },
+		{ name: 'P Shape', cases: [31, 32, 43, 44] },
+		{ name: 'T Shape', cases: [33, 45] },
+		{ name: 'Small L Shape', cases: [47, 48, 49, 50, 53, 54] },
+		{ name: 'Big Lightning Bolt', cases: [39, 40] },
+		{ name: 'I Shape', cases: [51, 52, 55, 56] }
+	],
+	hashOllMapping: {
+		1: "HD", 2: "PD", 3: "SD", 4: "AD", 5: "SRB", 6: "AFL", 7: "SFR", 8: "AFR", 9: "ARB",
+		10: "SFL", 11: "SBL", 12: "ABL", 13: "SFB", 14: "ARL", 15: "SRL", 16: "AFB", 17: "LD",
+		18: "UD", 19: "TD", 20: "OD", 21: "HO", 22: "PO", 23: "UO", 24: "TO", 25: "LO", 26: "AO",
+		27: "SO", 28: "OFR", 29: "TFL", 30: "TFR", 31: "TBL", 32: "TRB", 33: "TRL", 34: "TFB",
+		35: "LFL", 36: "LBL", 37: "LRB", 38: "LFR", 39: "LFB", 40: "LRL", 41: "UFR", 42: "UFL",
+		43: "UBL", 44: "URB", 45: "URL", 46: "UFB", 47: "PBL", 48: "PRB", 49: "PFR", 50: "PFL",
+		51: "PRL", 52: "PFB", 53: "HRB", 54: "HFR", 55: "HFB", 56: "HRL", 57: "OFB"
+	}
+} as const;
+
+const PLL_2LOOK_DEFINITION: GroupDefinition = {
+	id: 'pll2Look',
+	name: '2-Look PLL',
+	editName: 'PLL 2-Look',
+	numberCases: 6,
+	categories: [
+		{ name: 'Corner Permutation', cases: [1, 2] },
+		{ name: 'Edge Permutation', cases: [3, 4, 5, 6] }
+	],
+	caseNumberMapping: {
+		1: 'T',
+		2: 'Y',
+		3: 'Ua',
+		4: 'Ub',
+		5: 'Z',
+		6: 'H'
+	}
+} as const;
+
+const PLL_FULL_DEFINITION: GroupDefinition = {
+	id: 'pllFull',
+	name: 'Full PLL',
+	editName: 'PLL Full',
+	numberCases: 21,
+	categories: [
+		{ name: 'Edges Only', cases: [1, 2, 3, 4] },
+		{ name: 'Adjacent Corner Swap', cases: [5, 6, 8, 9, 10, 11, 12, 13, 18, 19, 20, 21] },
+		{ name: 'Diagonal Corner Swap', cases: [7, 14, 15, 16, 17] }
+	],
+	caseNumberMapping: {
+		1: 'Ua',
+		2: 'Ub',
+		3: 'Z',
+		4: 'H',
+		5: 'Aa',
+		6: 'Ab',
+		7: 'E',
+		8: 'T',
+		9: 'F',
+		10: 'Ja',
+		11: 'Jb',
+		12: 'Ra',
+		13: 'Rb',
+		14: 'V',
+		15: 'Y',
+		16: 'Na',
+		17: 'Nb',
+		18: 'Ga',
+		19: 'Gb',
+		20: 'Gc',
+		21: 'Gd'
+	}
+} as const;
+
 export const GROUP_DEFINITIONS: Record<GroupId, GroupDefinition> = {
 	basic: BASIC_DEFINITION,
 	basicBack: BASIC_BACK_DEFINITION,
 	advanced: ADVANCED_DEFINITION,
-	expert: EXPERT_DEFINITION
+	expert: EXPERT_DEFINITION,
+	oll2Look: OLL_2LOOK_DEFINITION,
+	ollFull: OLL_FULL_DEFINITION,
+	pll2Look: PLL_2LOOK_DEFINITION,
+	pllFull: PLL_FULL_DEFINITION
 } as const;
 
 // export const createGroupState = (group: GroupId, definition: GroupDefinition = GROUP_DEFINITIONS[group]): GroupState => {

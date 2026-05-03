@@ -7,7 +7,7 @@ import {
 } from '$lib/types/stickering';
 import { type Side, OPPOSITE_SIDE } from '$lib/types/Side';
 
-function getStickeringString(
+export function getStickeringString(
 	stickering: StickerHidden,
 	side?: Side,
 	crossColor?: StickerColor,
@@ -81,6 +81,26 @@ function getStickeringString(
 	for (const obj of colorObjs) for (const idx of Object.values(obj)) cornersArr[idx] = 'I';
 
 	// --- Apply mask to the player ---
+	const edges = edgesArr.join('');
+	const corners = cornersArr.join('');
+	return `EDGES:${edges},CORNERS:${corners},CENTERS:------`;
+}
+
+export function getLLStickeringString(crossColor?: StickerColor) {
+	if (crossColor === undefined) crossColor = 'white';
+	const topColor = OPPOSITE_COLOR[crossColor];
+
+	const edgesArr = Array(12).fill('I');
+	const cornersArr = Array(8).fill('I');
+
+	// Keep top edges
+	const edgeIndices = Object.values(STICKERING.edges[topColor]);
+	for (const i of edgeIndices) edgesArr[i] = '-';
+
+	// Keep top corners
+	const colorObjs = Object.values(STICKERING.corners[topColor]);
+	for (const obj of colorObjs) for (const idx of Object.values(obj)) cornersArr[idx] = '-';
+
 	const edges = edgesArr.join('');
 	const corners = cornersArr.join('');
 	return `EDGES:${edges},CORNERS:${corners},CENTERS:------`;

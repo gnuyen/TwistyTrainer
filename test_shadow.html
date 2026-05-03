@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="module" src="https://cdn.cubing.net/js/cubing/twisty"></script>
+</head>
+<body>
+  <twisty-player id="tp" alg="R U R' U R U2 R'" experimental-stickering="OLL" visualization="experimental-2D-LL"></twisty-player>
+  <script type="module">
+    customElements.whenDefined('twisty-player').then(() => {
+      const tp = document.getElementById('tp');
+      setTimeout(() => {
+        const svg = tp.shadowRoot.querySelector('svg');
+        console.log(svg ? svg.innerHTML : 'No SVG');
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

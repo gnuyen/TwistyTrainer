@@ -80,7 +80,7 @@
 		try {
 			const payload = {
 				access_key: '70f60afc-3ab0-4491-80be-e854832fddb9',
-				subject: 'F2L Trainer feedback',
+				subject: 'CFOP Trainer feedback',
 				name: formData.name,
 				email: formData.email,
 				message: formData.message

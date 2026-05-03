@@ -59,7 +59,12 @@
 	const caseSolves = $derived(getSolvesForCase(statisticsState.allSolves, groupId, caseId));
 	const solveCount = $derived(caseSolves.length);
 
-	function cycleTrainStates() {
+	// For OLL/PLL, the 2D visualizer already rotates the image to reflect the setup move,
+	// so we suppress the y/U prefixes from the text display to avoid redundant instructions.
+	const isLastLayer = $derived(groupId.startsWith('oll') || groupId.startsWith('pll'));
+	const displayAlg = $derived(isLastLayer ? alg.replace(/^(y2?|y'|U2?|U')\s*/, '') : alg);
+
+	function cycleTrainStates(e: MouseEvent) {
 		const currentIndex = TRAIN_STATES.indexOf(caseState.trainState);
 		// Move to next state, wrap to 0 if at end
 		const nextIndex = (currentIndex + 1) % TRAIN_STATES.length;
@@ -117,9 +122,16 @@
 	)}"
 	style="background-color: {TrainStateColors[caseState.trainState]};"
 >
-	<span class="font-arial px-1 md:text-lg {getCaseTextClass(caseState.trainState)}">
-		{getCaseName(staticData)}
-	</span>
+	<div class="flex min-w-8 flex-col items-center justify-center px-1">
+		<span class="font-arial md:text-lg {getCaseTextClass(caseState.trainState)}">
+			{getCaseName(staticData)}
+		</span>
+		{#if staticData.hashOllId}
+			<span class="font-arial text-xs opacity-75 {getCaseTextClass(caseState.trainState)}">
+				#{staticData.hashOllId}
+			</span>
+		{/if}
+	</div>
 	<div
 		class="relative size-21 md:size-25 2xl:size-30"
 		onpointerdowncapture={() => {
@@ -150,7 +162,7 @@
 		)}"
 	>
 		<span class="font-arial">
-			{alg}
+			{displayAlg}
 		</span>
 		{#if solveCount > 0}
 			<!-- Visible absolute positioned stats -->

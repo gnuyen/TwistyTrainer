@@ -1,4 +1,6 @@
-export declare const getSolvesForCurrentUser: import("convex/server").RegisteredQuery<"public", {}, Promise<{
+export declare const getSolvesForCurrentUser: import("convex/server").RegisteredQuery<"public", {
+    includeDeleted?: boolean | undefined;
+}, Promise<{
     _id: import("convex/values").GenericId<"solves">;
     _creationTime: number;
     time?: number | undefined;
@@ -34,6 +36,7 @@ export declare const addSolve: import("convex/server").RegisteredMutation<"publi
     };
 }, Promise<import("convex/values").GenericId<"solves">>>;
 export declare const updateSolve: import("convex/server").RegisteredMutation<"public", {
+    timestamp?: number | undefined;
     id: string;
     time: number;
 }, Promise<void>>;
@@ -42,6 +45,10 @@ export declare const deleteSolve: import("convex/server").RegisteredMutation<"pu
 }, Promise<void>>;
 export declare const deleteSolvesBySession: import("convex/server").RegisteredMutation<"public", {
     sessionId: string;
+}, Promise<number>>;
+export declare const moveSolvesToSession: import("convex/server").RegisteredMutation<"public", {
+    sourceSessionId: string;
+    targetSessionId: string;
 }, Promise<number>>;
 export declare const bulkUpsertSolves: import("convex/server").RegisteredMutation<"public", {
     solves: {

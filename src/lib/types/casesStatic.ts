@@ -12,4 +12,6 @@ export interface CaseStatic {
 	ignoreAUF: boolean;
 	pieceToHide: StickerHidden;
 	caseName: string | undefined;
+	hashOllId?: string;
+	arrows?: string;
 }

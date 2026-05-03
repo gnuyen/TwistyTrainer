@@ -1,4 +1,4 @@
-import type { GroupId } from './group';
+import type { GroupId, StepId } from './group';
 
 export type View = 'select' | 'train';
 
@@ -8,6 +8,7 @@ export type HintStickering = 'f2l' | 'fully';
 export interface GlobalState {
 	categoriesOpenedObj: Record<GroupId, boolean[]>;
 	view: View;
+	selectedStep: StepId;
 	selectedGroup: GroupId;
 	playOnAlgChange: boolean;
 	showDetails: boolean;

@@ -23,7 +23,7 @@
 - **Cube Logic:** [cubing.js](https://js.cubing.net/cubing/)
 - **Charts:** ApexCharts
 
-This F2L Trainer was inspired by JPerms [OLL Trainer](https://jperm.net/algs/oll) and Romans [OLL Trainer](https://bestsiteever.ru/oll/) / [PLL Trainer](https://bestsiteever.ru/pll/).
+This CFOP Trainer was inspired by JPerms [OLL Trainer](https://jperm.net/algs/oll) and Romans [OLL Trainer](https://bestsiteever.ru/oll/) / [PLL Trainer](https://bestsiteever.ru/pll/).
 
 ---
 

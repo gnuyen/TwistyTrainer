@@ -4,7 +4,7 @@
 	import { casesStatic } from '$lib/casesStatic';
 	import type { CustomAlgorithm } from '$lib/types/caseState';
 	import getRotationAlg from '$lib/rotation';
-	import getStickeringString from '$lib/stickering';
+	import getStickeringString, { getLLStickeringString } from '$lib/stickering';
 	import type { AlgorithmSelection } from '$lib/types/caseState';
 	import type { GroupId } from '$lib/types/group';
 	import type { Side } from '$lib/types/Side';
@@ -170,17 +170,29 @@
 
 	const setupRotation = $derived(getRotationAlg(crossColor, frontColor));
 
-	let cameraLongitude = $derived((side === 'right' ? 1 : -1) * globalState.cameraLongitude);
-	let cameraLatitude = $derived(globalState.cameraLatitude);
-
 	// Constants for camera position tracking
 	const CAMERA_POSITION_TOLERANCE = 0.1; // Tolerance for comparing camera positions
 	const TWISTY_PLAYER_INIT_DELAY = 100; // Delay in ms to ensure TwistyPlayer is fully initialized
 
+	const stepId = $derived(
+		groupId?.toLowerCase().includes('oll') ? 'OLL' : groupId?.toLowerCase().includes('pll') ? 'PLL' : 'F2L'
+	);
+
+	let cameraLongitude = $derived(
+		stepId === 'F2L' 
+			? (side === 'right' ? 1 : -1) * globalState.cameraLongitude
+			: (side === 'right' ? 15 : -15)
+	);
+	let cameraLatitude = $derived(
+		stepId === 'F2L' ? globalState.cameraLatitude : 60
+	);
+
 	let stickeringString = $derived(
-		stickering === 'f2l' && staticData
-			? getStickeringString(staticData.pieceToHide, side, crossColor, frontColor)
-			: undefined
+		stepId === 'F2L'
+			? (stickering === 'f2l' && staticData
+				? getStickeringString(staticData.pieceToHide, side, crossColor, frontColor)
+				: undefined)
+			: getLLStickeringString(crossColor)
 	);
 
 	// Track whether the reset button should be visible
@@ -395,6 +407,7 @@
 		camera-longitude={cameraLongitude}
 		camera-latitude={cameraLatitude}
 		experimental-stickering-mask-orbits={stickeringString}
+		experimental-stickering={stepId !== 'F2L' ? stepId : undefined}
 		control-panel={controlPanel}
 		experimental-drag-input={experimentalDragInput}
 		background="none"

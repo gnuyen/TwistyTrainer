@@ -1,6 +1,6 @@
 # LocalStorage Migration - Manual Testing Guide
 
-This guide provides console scripts to manually test the localStorage migration from the old F2L Trainer format to the new Svelte app format.
+This guide provides console scripts to manually test the localStorage migration from the old CFOP Trainer format to the new Svelte app format.
 
 ## Prerequisites
 

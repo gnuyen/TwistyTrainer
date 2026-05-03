@@ -74,7 +74,7 @@
 						target="_blank"
 						class="underline hover:text-blue-700 dark:hover:text-blue-100"
 						>Bluefy - Web Bluetooth Browser</a
-					> from the App Store and open the F2L Trainer inside it.
+					> from the App Store and open the CFOP Trainer inside it.
 				</p>
 			</div>
 

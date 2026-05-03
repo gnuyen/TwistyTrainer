@@ -45,7 +45,8 @@ export const casesStatic = (() => {
 						groupName: definition.name,
 						ignoreAUF: definition.ignoreAUF?.includes(caseId) ?? false,
 						pieceToHide,
-						caseName: definition.caseNumberMapping?.[caseId]
+						caseName: definition.caseNumberMapping?.[caseId],
+						hashOllId: definition.hashOllMapping?.[caseId]
 					} satisfies CaseStatic
 				];
 			})

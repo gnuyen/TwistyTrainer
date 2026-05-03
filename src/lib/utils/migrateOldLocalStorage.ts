@@ -1,5 +1,5 @@
 /**
- * Migration utility for converting old F2L Trainer localStorage format
+ * Migration utility for converting old CFOP Trainer localStorage format
  * to the new Svelte app format.
  *
  * Old format uses separate keys per group:

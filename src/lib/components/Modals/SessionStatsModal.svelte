@@ -48,7 +48,11 @@
 		basic: 0,
 		basicBack: 1,
 		advanced: 2,
-		expert: 3
+		expert: 3,
+		oll2Look: 4,
+		ollFull: 5,
+		pll2Look: 6,
+		pllFull: 7
 	};
 
 	function toggleSort(column: SortColumn) {

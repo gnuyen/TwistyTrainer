@@ -7,6 +7,14 @@ import { advancedScrambles } from './scrambles/advanced_scrambles';
 import { basicScrambles } from './scrambles/basic_scrambles';
 import { basicScramblesBack } from './scrambles/basic_scrambles_back';
 import { expertScrambles } from './scrambles/expert_scrambles';
+import { oll2LookScrambles } from './scrambles/oll_2look_scrambles';
+import { ollFullScrambles } from './scrambles/oll_full_scrambles';
+import { pll2LookScrambles } from './scrambles/pll_2look_scrambles';
+import { pllFullScrambles } from './scrambles/pll_full_scrambles';
+import { oll2LookAlgorithms } from './algorithms/oll_2look_algorithms';
+import { ollFullAlgorithms } from './algorithms/oll_full_algorithms';
+import { pll2LookAlgorithms } from './algorithms/pll_2look_algorithms';
+import { pllFullAlgorithms } from './algorithms/pll_full_algorithms';
 
 // export { basicAlgorithms } from "./algorithms/basic_algorithms";
 // export { basicAlgorithmsBack } from "./algorithms/basic_algorithms_back";
@@ -24,12 +32,20 @@ export const GROUP_SCRAMBLES: Record<GroupId, AlgorithmCollection> = {
 	basic: basicScrambles,
 	basicBack: basicScramblesBack,
 	advanced: advancedScrambles,
-	expert: expertScrambles
+	expert: expertScrambles,
+	oll2Look: oll2LookScrambles,
+	ollFull: ollFullScrambles,
+	pll2Look: pll2LookScrambles,
+	pllFull: pllFullScrambles
 };
 
 export const GROUP_ALGORITHMS: Record<GroupId, AlgorithmCollection> = {
 	basic: basicAlgorithms,
 	basicBack: basicAlgorithmsBack,
 	advanced: advancedAlgorithms,
-	expert: expertAlgorithms
+	expert: expertAlgorithms,
+	oll2Look: oll2LookAlgorithms,
+	ollFull: ollFullAlgorithms,
+	pll2Look: pll2LookAlgorithms,
+	pllFull: pllFullAlgorithms
 };

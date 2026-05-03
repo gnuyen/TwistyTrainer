@@ -22,7 +22,7 @@ export type Solve = {
 	deletedAt?: number; // If set, solve is deleted
 };
 
-export type CompressedGroupId = 'b' | 'bb' | 'a' | 'e';
+export type CompressedGroupId = 'b' | 'bb' | 'a' | 'e' | 'o2' | 'of' | 'p2' | 'pf';
 export type CompressedSide = 'l' | 'r';
 export type CompressedAuf = 0 | 1 | 2 | 3; // '' -> 0, 'U' -> 1, 'U2' -> 2, "U'" -> 3
 

@@ -51,14 +51,14 @@
 	localization={{
 		signIn: {
 			start: {
-				title: 'Welcome to F2L Trainer',
+				title: 'Welcome to CFOP Trainer',
 				subtitle:
 					'Sign in to sync your progress across devices, track your solve history, and never lose your training data.'
 			}
 		},
 		signUp: {
 			start: {
-				title: 'Join F2L Trainer',
+				title: 'Join CFOP Trainer',
 				subtitle:
 					'Create an account to unlock cloud sync, cross-device progress tracking, and detailed solve statistics.'
 			}

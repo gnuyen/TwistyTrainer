@@ -6,7 +6,7 @@ import type { SessionSettings } from './types/session';
 const createMockSettings = (): SessionSettings => ({
 	caseMode: 'group',
 	categorySelection: {} as any,
-	trainGroupSelection: { basic: true, basicBack: false, advanced: false, expert: false },
+	trainGroupSelection: { basic: true, basicBack: false, advanced: false, expert: false, oll2Look: false, ollFull: false, pll2Look: false, pllFull: false },
 	trainStateSelection: { unlearned: false, learning: true, finished: false },
 	trainSideSelection: { right: true, left: false },
 	selectedCases: {},

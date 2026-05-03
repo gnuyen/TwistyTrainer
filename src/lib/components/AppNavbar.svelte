@@ -59,10 +59,10 @@
 	class="relative z-50 bg-gray-100 px-4 py-2 sm:py-0 sm:pr-0 md:pr-2 dark:bg-gray-900"
 >
 	<NavBrand>
-		<img src={resolve(`/logo.svg`, {})} class="me-3 h-9 md:h-12" alt="F2L Trainer Logo" />
+		<img src={resolve(`/logo.svg`, {})} class="me-3 h-9 md:h-12" alt="CFOP Trainer Logo" />
 		<span
 			class="hidden self-center text-xl font-semibold whitespace-nowrap md:text-3xl xl:block dark:text-white"
-			>F2L Trainer</span
+			>CFOP Trainer</span
 		>
 	</NavBrand>
 	<div class="ml-auto flex items-center gap-2">

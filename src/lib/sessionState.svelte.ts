@@ -17,7 +17,7 @@ export const DEFAULT_SETTINGS: SessionSettings = {
 		GROUP_IDS.map((id) => [id, GROUP_DEFINITIONS[id].categories.map(() => true)])
 	) as any,
 	trainStateSelection: { unlearned: false, learning: true, finished: false },
-	trainGroupSelection: { basic: true, basicBack: true, advanced: true, expert: true },
+	trainGroupSelection: { basic: true, basicBack: true, advanced: true, expert: true, oll2Look: false, ollFull: false, pll2Look: false, pllFull: false },
 	trainSideSelection: { left: true, right: true },
 	selectedCases: {},
 	frequencyMode: 'smart',
