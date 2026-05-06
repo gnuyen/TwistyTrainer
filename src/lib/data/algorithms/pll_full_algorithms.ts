@@ -16,7 +16,7 @@ export const pllFullAlgorithms: AlgorithmCollection = {
     //F
     7: ["y x' R U' R' D R U R' D' R U R' D R U' R' D' x", "y R' U' R' D' R U' R' D R U R' D' R U R' D R2", "R2 U F' R' U R U' R' U R U' R' U R U' F U' R2", "y x' L' U L D' L' U' L D L' U' L D' L' U L D"],
     //T
-    8: ["(R U R' U') R' F (R2 U' R' U') (R U R') F'", "l b d' L' U' F U2 L' U' L' U L U' f' S M r u E U' R'", "R U R' U' R' F R2 U' R' U F' L' U L", "R2 u R2 u' R2 F2 u' F2 u F2"],
+    8: ["R U R' U' R' F R2 U' R' U' R U R' F'", "l b d' L' U' F U2 L' U' L' U L U' f' S M r u E U' R'", "R U R' U' R' F R2 U' R' U F' L' U L", "R2 u R2 u' R2 F2 u' F2 u F2"],
     //F
     9: ["y R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R", "y R' F R f' R' F R2 U R' U' R' F' R2 U R' S", "R' U R U' R2 F' U' F U R F R' F' R2", "y R2 F R F' R' U' F' U F R2 U R' U' R"],
     //Ja
@@ -30,7 +30,7 @@ export const pllFullAlgorithms: AlgorithmCollection = {
     //V
     14: ["R' U R' U' R D' R' D R' U D' R2 U' R2 D R2", "R' U R U' R' f' U' R U2 R' U' R U' R' f R", "y R U' R U R' D R D' R U' D R2 U R2 D' R2", "R' U R' U' y R' F' R2 U' R' U R' F R F"],
     //Y
-    15: ["F (R U' R' U') (R U R') F' (R U R' U') (R' F R F')", "F R' F R2 U' R' U' R U R' F' R U R' U' F'", "R2 U' R2 U' R2 U F U F' R2 F U' F'", "F R' F' R U R U' R2 U' R U R f' U' f"],
+    15: ["F R U' R' U' R U R' F' R U R' U' R' F R F'", "F R' F R2 U' R' U' R U R' F' R U R' U' F'", "R2 U' R2 U' R2 U F U F' R2 F U' F'", "F R' F' R U R U' R2 U' R U R f' U' f"],
     //Na
     16: ["R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'", "F' R U R' U' R' F R2 F U' R' U' R U F' R'", "R F U' R' U R U F' R2 F' R U R U' R' F", "r' D r U2 r' D r U2 r' D r U2 r' D r U2 r' D r"],
     //Nb
