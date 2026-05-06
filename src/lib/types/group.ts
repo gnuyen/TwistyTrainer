@@ -230,6 +230,19 @@ const OLL_2LOOK_DEFINITION: GroupDefinition = {
 		{ name: 'Edge Orientation', cases: [1, 2, 3] },
 		{ name: 'Corner Orientation', cases: [4, 5, 6, 7, 8, 9, 10] }
 	],
+	caseNumberMapping: {
+		1: 'Dot',
+		2: 'L-Shape',
+		3: 'I-Shape',
+		4: 'Sune',
+		5: 'Antisune',
+		6: 'Pi',
+		7: 'U',
+		8: 'T',
+		9: 'L',
+		10: 'H'
+	},
+	/*
 	hashOllMapping: {
 		1: 'PD',
 		2: 'URB',
@@ -241,7 +254,7 @@ const OLL_2LOOK_DEFINITION: GroupDefinition = {
 		8: 'TO',
 		9: 'LO',
 		10: 'HO'
-	}
+	}*/
 } as const;
 
 const OLL_FULL_DEFINITION: GroupDefinition = {

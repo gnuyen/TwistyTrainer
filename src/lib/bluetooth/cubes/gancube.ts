@@ -8,6 +8,13 @@ import { CubieCube, SOLVED_FACELET, valuedArray } from '../core/mathlib';
 import { giikerutil, $ } from '../core/utils';
 import type { CubeModel } from '../core/types';
 import LZString from 'lz-string';
+import { bluetoothState } from '../store.svelte';
+
+/** Parse a 16-bit sign-magnitude value and normalize to [-1, 1] (GAN quaternion format). */
+function parseS16(bin: string): number {
+	const v = parseInt(bin, 2);
+	return (1 - (v >> 15) * 2) * (v & 0x7fff) / 0x7fff;
+}
 
 const mathlib = {
 	CubieCube,
@@ -708,7 +715,14 @@ function parseV2Data(value: DataView | any) {
 	}
 
 	if (mode == 1) {
-		// gyro
+		// gyro — W,X,Y,Z each 16-bit sign-magnitude; W starts at bit 4 (immediately after 4-bit mode nibble)
+		const qw = parseS16(bin.slice(4, 20));
+		const qx = parseS16(bin.slice(20, 36));
+		const qy = parseS16(bin.slice(36, 52));
+		const qz = parseS16(bin.slice(52, 68));
+		// THREE(x,y,z) = GAN(x,z,-y) — matches cubedex axis remapping
+		bluetoothState.handleGyroCallback(qw, qx, qz, -qy);
+		giikerutil.log('[gancube]', 'v2 gyro', qw.toFixed(3), qx.toFixed(3), qy.toFixed(3), qz.toFixed(3));
 	} else if (mode == 2) {
 		// cube move
 		giikerutil.log('[gancube]', 'v2 received move event', decoded);
@@ -1219,7 +1233,14 @@ function parseV4Data(value: DataView | any) {
 		giikerutil.log('[gancube]', 'v4 battery level', batteryLevel);
 		giikerutil.updateBattery([batteryLevel, deviceName + '*']);
 	} else if (mode == 0xec) {
-		// gyro
+		// gyro — W,X,Y,Z each 16-bit sign-magnitude; W starts at bit 16 (after 8-bit mode + 8-bit counter)
+		const qw = parseS16(bin.slice(16, 32));
+		const qx = parseS16(bin.slice(32, 48));
+		const qy = parseS16(bin.slice(48, 64));
+		const qz = parseS16(bin.slice(64, 80));
+		// THREE(x,y,z) = GAN(x,z,-y) — matches cubedex axis remapping
+		bluetoothState.handleGyroCallback(qw, qx, qz, -qy);
+		giikerutil.log('[gancube]', 'v4 gyro', qw.toFixed(3), qx.toFixed(3), qy.toFixed(3), qz.toFixed(3));
 	} else {
 		giikerutil.log('[gancube]', 'v4 received unknown event', mode, decoded);
 	}

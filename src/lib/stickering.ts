@@ -86,7 +86,7 @@ export function getStickeringString(
 	return `EDGES:${edges},CORNERS:${corners},CENTERS:------`;
 }
 
-export function getLLStickeringString(crossColor?: StickerColor) {
+export function getLLStickeringString(crossColor?: StickerColor, maskTopCorners = false) {
 	if (crossColor === undefined) crossColor = 'white';
 	const topColor = OPPOSITE_COLOR[crossColor];
 
@@ -98,8 +98,10 @@ export function getLLStickeringString(crossColor?: StickerColor) {
 	for (const i of edgeIndices) edgesArr[i] = '-';
 
 	// Keep top corners
-	const colorObjs = Object.values(STICKERING.corners[topColor]);
-	for (const obj of colorObjs) for (const idx of Object.values(obj)) cornersArr[idx] = '-';
+	if (!maskTopCorners) {
+		const colorObjs = Object.values(STICKERING.corners[topColor]);
+		for (const obj of colorObjs) for (const idx of Object.values(obj)) cornersArr[idx] = '-';
+	}
 
 	const edges = edgesArr.join('');
 	const corners = cornersArr.join('');

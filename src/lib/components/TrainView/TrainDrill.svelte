@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button, ButtonGroup, P, Spinner, Hr } from 'flowbite-svelte';
-	import TwistyPlayer from '../TwistyPlayer.svelte';
+	import TwistyPlayer from '../TrainCubePlayer.svelte';
 	import {
 		advanceToNextTrainCase,
 		getNumberOfSelectedCases,
@@ -38,7 +38,8 @@
 		Play,
 		Check,
 		Bluetooth,
-		EllipsisVertical
+		EllipsisVertical,
+		Compass
 	} from '@lucide/svelte';
 	import Details from './Details.svelte';
 	import TrainStateSelect from './TrainStateSelect.svelte';
@@ -427,7 +428,7 @@
 	<!-- Drill is running - show TwistyPlayer and controls -->
 
 	<div
-		class="relative mx-auto mt-4 aspect-square size-50 shrink-0 md:size-60"
+		class="relative mx-auto mt-4 aspect-square w-full max-w-sm shrink-0"
 		onpointerdowncapture={() => {
 			globalState.hasUsedTwistyPlayer = true;
 		}}
@@ -580,6 +581,17 @@
 			<Button color="primary" size="xl" onclick={onStartDrill}>
 				<Play class="mr-2 size-5" />
 				Start Drill
+			</Button>
+			<!-- Gyro toggle (GAN cube only) -->
+			<Button
+				color={bluetoothState.gyroEnabled ? 'yellow' : 'alternative'}
+				size="sm"
+				onclick={() => bluetoothState.toggleGyro()}
+				title="Toggle gyro view (GAN cube with gyro sensor required)"
+				class="flex items-center gap-1"
+			>
+				<Compass class="size-4" />
+				<span class="hidden sm:inline">{bluetoothState.gyroEnabled ? 'Gyro On' : 'Gyro'}</span>
 			</Button>
 		{:else}
 			<!-- Not connected - show Connect button group -->

@@ -16,8 +16,9 @@
 	import { RotateCw, Eye, EyeOff } from '@lucide/svelte';
 	import { setupTwistyPlayerClickHandlers } from '$lib/utils/twistyPlayerClickHandler';
 	import type { HintStickering } from '$lib/types/globalState';
-	import { checkF2LState } from '$lib/utils/checkF2LState';
+	import { checkF2LState } from '$lib/utils/checkSolvedState';
 	import { globalState } from '$lib/globalState.svelte';
+	import { bluetoothState } from '$lib/bluetooth/store.svelte';
 
 	interface Props {
 		groupId?: GroupId;
@@ -175,24 +176,30 @@
 	const TWISTY_PLAYER_INIT_DELAY = 100; // Delay in ms to ensure TwistyPlayer is fully initialized
 
 	const stepId = $derived(
-		groupId?.toLowerCase().includes('oll') ? 'OLL' : groupId?.toLowerCase().includes('pll') ? 'PLL' : 'F2L'
+		groupId?.toLowerCase().includes('oll')
+			? 'OLL'
+			: groupId?.toLowerCase().includes('pll')
+				? 'PLL'
+				: 'F2L'
 	);
 
 	let cameraLongitude = $derived(
-		stepId === 'F2L' 
+		stepId === 'F2L'
 			? (side === 'right' ? 1 : -1) * globalState.cameraLongitude
-			: (side === 'right' ? 15 : -15)
+			: side === 'right'
+				? 15
+				: -15
 	);
-	let cameraLatitude = $derived(
-		stepId === 'F2L' ? globalState.cameraLatitude : 60
-	);
+	let cameraLatitude = $derived(stepId === 'F2L' ? globalState.cameraLatitude : 60);
+
+	const isOELL = $derived(groupId === 'oll2Look' && [1, 2, 3].includes(caseId ?? -1));
 
 	let stickeringString = $derived(
 		stepId === 'F2L'
-			? (stickering === 'f2l' && staticData
+			? stickering === 'f2l' && staticData
 				? getStickeringString(staticData.pieceToHide, side, crossColor, frontColor)
-				: undefined)
-			: getLLStickeringString(crossColor)
+				: undefined
+			: getLLStickeringString(crossColor, isOELL)
 	);
 
 	// Track whether the reset button should be visible
@@ -200,6 +207,8 @@
 
 	// Store event listeners for cleanup
 	let cleanupClickHandlers: (() => void) | null = null;
+	// Gyro rAF ID — cancelled in onDestroy
+	let gyroRafId: number | null = null;
 
 	export function getElement() {
 		return el as HTMLElement;
@@ -319,6 +328,67 @@
 				}
 			}
 		}, TWISTY_PLAYER_INIT_DELAY);
+
+		// ── Gyro rAF loop (Cubedex pattern) ─────────────────────────────────
+		// Reads from gyroQuatRef.current (non-reactive mutable ref, updated at
+		// full gyro rate) and slerps the Three.js puzzle quaternion each frame.
+		// When gyro is off, slerps back to identity so the camera orbit restores
+		// the normal TwistyPlayer view. No HOME_ORIENTATION offset is applied —
+		// display = conjugate(ref) * current, tracking the real cube 1:1.
+		let gyroPuzzleObj: any = null;
+		let gyroVantage: any = null;
+		let forceRefresh = true;
+		// Pre-allocated target quaternion (avoids per-frame allocation)
+		const targetQuat = { x: 0, y: 0, z: 0, w: 1 };
+
+		function slerpPuzzleQuatInPlace(pq: any, tgt: { x: number; y: number; z: number; w: number }) {
+			const dot = pq.x*tgt.x + pq.y*tgt.y + pq.z*tgt.z + pq.w*tgt.w;
+			const sign = dot < 0 ? -1 : 1;
+			const alpha = 0.25;
+			pq.x += alpha * (sign*tgt.x - pq.x);
+			pq.y += alpha * (sign*tgt.y - pq.y);
+			pq.z += alpha * (sign*tgt.z - pq.z);
+			pq.w += alpha * (sign*tgt.w - pq.w);
+			const m = Math.sqrt(pq.x*pq.x + pq.y*pq.y + pq.z*pq.z + pq.w*pq.w);
+			if (m > 0) { pq.x /= m; pq.y /= m; pq.z /= m; pq.w /= m; }
+		}
+
+		async function gyroAnimationLoop() {
+			const player = el as any;
+			if (!player) { gyroRafId = null; return; }
+
+			// (Re-)fetch puzzle object / vantage when missing or after a force-refresh
+			if (!gyroPuzzleObj || !gyroVantage || forceRefresh) {
+				try {
+					const vantages = await player.experimentalCurrentVantages();
+					gyroVantage = [...vantages][0] ?? null;
+					gyroPuzzleObj = await player.experimentalCurrentThreeJSPuzzleObject();
+					forceRefresh = false;
+				} catch {
+					gyroPuzzleObj = null;
+					gyroVantage = null;
+				}
+			}
+
+			if (gyroPuzzleObj && gyroVantage) {
+				// Read from non-reactive ref — updated at full gyro rate, no Svelte overhead
+				const liveQ = bluetoothState.gyroQuatRef.current;
+				if (bluetoothState.gyroEnabled && liveQ) {
+					// Only drive the puzzle quaternion when gyro is actively enabled
+					targetQuat.x = liveQ.x; targetQuat.y = liveQ.y;
+					targetQuat.z = liveQ.z; targetQuat.w = liveQ.w;
+					slerpPuzzleQuatInPlace(gyroPuzzleObj.quaternion, targetQuat);
+					gyroVantage.render?.();
+				}
+				// Gyro off: do nothing — TwistyPlayer manages its own rendering.
+				// resetView() (called on gyro toggle) restores the camera orbit view.
+			}
+
+			// Schedule next frame AFTER all async work (Cubedex pattern)
+			gyroRafId = requestAnimationFrame(gyroAnimationLoop);
+		}
+
+		gyroRafId = requestAnimationFrame(gyroAnimationLoop);
 	});
 
 	// Public method to add a move to the player dynamically (e.g. from Bluetooth)
@@ -357,7 +427,8 @@
 						staticData.pieceToHide,
 						side,
 						onF2LSolved,
-						onCubeSolved
+						onCubeSolved,
+						stepId
 					);
 				}
 			}
@@ -368,6 +439,10 @@
 	onDestroy(() => {
 		if (cleanupClickHandlers) {
 			cleanupClickHandlers();
+		}
+		if (gyroRafId !== null) {
+			cancelAnimationFrame(gyroRafId);
+			gyroRafId = null;
 		}
 	});
 </script>

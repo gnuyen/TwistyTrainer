@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button, Spinner } from 'flowbite-svelte';
-	import { Bluetooth, BluetoothConnected, EllipsisVertical } from '@lucide/svelte';
+	import { Bluetooth, BluetoothConnected, EllipsisVertical, Compass, RotateCcw } from '@lucide/svelte';
 	import BluetoothModal from './Modals/BluetoothModal.svelte';
 	import { bluetoothState } from '$lib/bluetooth/store.svelte';
 	import { savedCubesState } from '$lib/bluetooth/savedCubes.svelte';
@@ -58,6 +58,44 @@
 			>{bluetoothState.isConnecting ? 'Connecting...' : buttonLabel}</span
 		>
 	</Button>
+	{#if bluetoothState.isConnected}
+		<!-- Gyro toggle: rotates view with the physical GAN cube -->
+		<Button
+			class="border border-l-0 border-gray-200 bg-white px-2 py-1.5 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700 {bluetoothState.gyroEnabled
+				? 'text-amber-500 dark:text-amber-400'
+				: 'text-gray-900 dark:text-gray-400'}"
+			onclick={() => bluetoothState.toggleGyro()}
+			title={bluetoothState.gyroEnabled
+				? 'Gyro active — view follows cube orientation. Click to disable.'
+				: 'Enable gyro view (GAN cube with IMU required)'}
+		>
+			<Compass class="size-6" />
+		</Button>
+		{#if bluetoothState.gyroEnabled}
+			<!-- Top-face toggle: W = white on top, Y = yellow on top -->
+			<Button
+				class="border border-l-0 border-gray-200 bg-white px-2 py-1.5 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700 {bluetoothState.gyroTopFaceYellow
+					? 'text-yellow-400 dark:text-yellow-300'
+					: 'text-gray-500 dark:text-gray-400'}"
+				onclick={() => bluetoothState.toggleGyroTopFace()}
+				title={bluetoothState.gyroTopFaceYellow
+					? 'Calibrating yellow-up — click to switch to white-up'
+					: 'Calibrating white-up — click to switch to yellow-up'}
+			>
+				<span class="text-xs font-bold leading-none">{bluetoothState.gyroTopFaceYellow ? 'Y' : 'W'}</span>
+			</Button>
+			<!-- Recalibrate: hold the selected top face up / green-front and click -->
+			<Button
+				class="border border-l-0 border-gray-200 bg-white px-2 py-1.5 text-gray-900 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+				onclick={() => bluetoothState.recalibrateGyro()}
+				title={bluetoothState.gyroTopFaceYellow
+					? 'Recalibrate gyro — hold cube yellow-up / green-front, then click'
+					: 'Recalibrate gyro — hold cube white-up / green-front, then click'}
+			>
+				<RotateCcw class="size-5" />
+			</Button>
+		{/if}
+	{/if}
 	<Button
 		class="rounded-l-none border border-l-0 border-gray-200 bg-white px-1.5 py-1.5 text-gray-900 hover:bg-gray-100 focus:text-blue-700 focus:ring-2 focus:ring-blue-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-500"
 		onclick={() => (open = true)}

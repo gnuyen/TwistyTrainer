@@ -104,19 +104,21 @@
 	);
 	const cameraLatitude = $derived(stepId === 'F2L' ? globalState.cameraLatitude : 60);
 
+	const isOELL = $derived(groupId === 'oll2Look' && [1, 2, 3].includes(caseId ?? -1));
+
 	const stickeringString = $derived(
 		stepId === 'F2L'
 			? stickering === 'f2l' && staticData
 				? getStickeringString(staticData.pieceToHide, side, crossColor, frontColor)
 				: undefined
-			: getLLStickeringString(crossColor)
+			: getLLStickeringString(crossColor, isOELL)
 	);
 
 	let el: HTMLElement | undefined = $state();
 	let srContainer: HTMLElement | undefined = $state();
 
 	function getAlgRotation(algorithm: string): number {
-		const match = algorithm.trim().match(/^(y2?|y'|U2?|U')/);
+		const match = algorithm.trim().match(/^(y'|y2?|U'|U2?)/);
 		if (!match) return 0;
 		const move = match[1];
 		if (move === 'y' || move === 'U') return 90;
@@ -130,19 +132,22 @@
 			srContainer.innerHTML = '';
 			const caseName = staticData?.caseName;
 			let arrows = stepId === 'PLL' && caseName ? PLL_ARROWS[caseName] : undefined;
-			
+
 			// Format arrows with black color and scale (-s7 makes them shorter)
 			if (arrows) {
 				// sr-visualizer regex expects scale BEFORE color (e.g. U1U3-s7-black)
-				arrows = arrows.split(',').map(a => `${a}-s7-black`).join(',');
+				arrows = arrows
+					.split(',')
+					.map((a) => `${a}-s7-black`)
+					.join(',');
 			}
 			// Use the primary algorithm to always generate a standard orientation
 			const baseAlg = staticData?.algPool?.[0] ?? alg;
-			
+
 			cubeSVG(srContainer, {
 				case: baseAlg,
 				view: 'plan',
-				mask: stepId === 'OLL' ? Masking.OLL : Masking.LL,
+				mask: stepId === 'OLL' ? (isOELL ? Masking.OELL : Masking.OLL) : Masking.LL,
 				arrows: arrows,
 				width: 300,
 				height: 300,
@@ -152,10 +157,16 @@
 				colorScheme: {
 					// Use cubing js colors to keep it consistent
 					0: crossColor ? CUBING_JS_COLORS[OPPOSITE_COLOR[crossColor]] : CUBING_JS_COLORS['yellow'], // U
-					1: (crossColor && frontColor && SIDE_COLOR[crossColor]?.[frontColor]?.right) ? CUBING_JS_COLORS[SIDE_COLOR[crossColor][frontColor]!.right] : CUBING_JS_COLORS['green'], // R
-					2: frontColor ? CUBING_JS_COLORS[frontColor] : CUBING_JS_COLORS['red'],         // F
+					1:
+						crossColor && frontColor && SIDE_COLOR[crossColor]?.[frontColor]?.right
+							? CUBING_JS_COLORS[SIDE_COLOR[crossColor][frontColor]!.right]
+							: CUBING_JS_COLORS['green'], // R
+					2: frontColor ? CUBING_JS_COLORS[frontColor] : CUBING_JS_COLORS['red'], // F
 					3: crossColor ? CUBING_JS_COLORS[crossColor] : CUBING_JS_COLORS['white'], // D
-					4: (crossColor && frontColor && SIDE_COLOR[crossColor]?.[frontColor]?.left) ? CUBING_JS_COLORS[SIDE_COLOR[crossColor][frontColor]!.left] : CUBING_JS_COLORS['blue'], // L
+					4:
+						crossColor && frontColor && SIDE_COLOR[crossColor]?.[frontColor]?.left
+							? CUBING_JS_COLORS[SIDE_COLOR[crossColor][frontColor]!.left]
+							: CUBING_JS_COLORS['blue'], // L
 					5: frontColor ? CUBING_JS_COLORS[OPPOSITE_COLOR[frontColor]] : CUBING_JS_COLORS['orange'] // B
 				}
 			});
@@ -171,9 +182,9 @@
 	{#if stepId === 'OLL' || stepId === 'PLL'}
 		{@const baseAlg = staticData?.algPool?.[0] ?? alg}
 		{@const rotationOffset = getAlgRotation(alg) - getAlgRotation(baseAlg)}
-		<div 
-			bind:this={srContainer} 
-			class="sr-container" 
+		<div
+			bind:this={srContainer}
+			class="sr-container"
 			style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; transform: rotate({rotationOffset}deg);"
 		></div>
 	{:else}

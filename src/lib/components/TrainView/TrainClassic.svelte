@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button, P } from 'flowbite-svelte';
-	import TwistyPlayer from '../TwistyPlayer.svelte';
+	import TwistyPlayer from '../TrainCubePlayer.svelte';
 	import {
 		advanceToNextTrainCase,
 		advanceToPreviousTrainCase,
@@ -264,7 +264,7 @@
 </div>
 
 <div
-	class="relative mx-auto size-60 md:size-80"
+	class="relative mx-auto aspect-square w-full max-w-sm"
 	onpointerdowncapture={() => {
 		globalState.hasUsedTwistyPlayer = true;
 	}}

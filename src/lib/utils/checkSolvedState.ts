@@ -126,9 +126,28 @@ function isCubeSolved(normalizedPattern: NormalizedPattern): boolean {
 	);
 }
 
+// LL edge/corner indices (top face)
+const LL_EDGES = [0, 1, 2, 3] as const; // UF, UR, UB, UL
+const LL_CORNERS = [0, 1, 2, 3] as const; // URF, UFL, ULB, UBR
+
+/**
+ * Checks if OLL is solved: all 4 LL edges and corners have correct orientation
+ */
+function isOLLSolved(normalizedPattern: NormalizedPattern): boolean {
+	const { CORNERS, EDGES } = normalizedPattern.patternData;
+	for (const i of LL_EDGES) {
+		if (EDGES.orientation[i] !== 0) return false;
+	}
+	for (const i of LL_CORNERS) {
+		if (CORNERS.orientation[i] !== 0) return false;
+	}
+	return true;
+}
+
 export interface F2LState {
 	f2lSolved: boolean;
 	cubeSolved: boolean;
+	ollSolved: boolean;
 }
 
 /**
@@ -142,6 +161,8 @@ export interface F2LState {
  * @param onCubeSolved - Optional callback when cube is fully solved
  * @returns The current F2L state
  */
+export type StepId = 'F2L' | 'OLL' | 'PLL';
+
 export async function checkF2LState(
 	pattern: PuzzlePattern,
 	scramble: string,
@@ -149,31 +170,50 @@ export async function checkF2LState(
 	piecesToHide?: StickerHidden,
 	side: Side = 'right',
 	onF2LSolved?: () => void,
-	onCubeSolved?: () => void
+	onCubeSolved?: () => void,
+	stepId: StepId = 'F2L'
 ): Promise<F2LState> {
 	try {
 		// Generate normalized pattern from scramble + alg (ignores setupRotation)
 		const currentAppliedAlg = new Alg(scramble + ' ' + alg);
 		const normalizedPattern = pattern.kpuzzle.algToTransformation(currentAppliedAlg).toKPattern();
 
-		// Check if F2L is solved
+		// Check solve conditions
 		const f2lSolved = isF2LSolved(
 			normalizedPattern.patternData.CORNERS,
 			normalizedPattern.patternData.EDGES,
 			piecesToHide,
 			side
 		);
-
-		// Check if cube is fully solved
 		const cubeSolved = isCubeSolved(normalizedPattern);
+		const ollSolved = isOLLSolved(normalizedPattern);
 
-		// Log solved states
-		if (f2lSolved) {
-			console.log(
-				'%c\u2713 F2L SOLVED!',
-				'color: #fff; background: #27ae60; font-size:1.2rem; font-weight: bold; padding: 4px 12px; border-radius: 4px;'
-			);
-			onF2LSolved?.();
+		// Fire callbacks based on step type
+		if (stepId === 'OLL') {
+			if (ollSolved) {
+				console.log(
+					'%c\u2713 OLL SOLVED!',
+					'color: #fff; background: #e67e22; font-size:1.2rem; font-weight: bold; padding: 4px 12px; border-radius: 4px;'
+				);
+				onF2LSolved?.();
+			}
+		} else if (stepId === 'PLL') {
+			if (cubeSolved) {
+				console.log(
+					'%c\u2713 PLL SOLVED!',
+					'color: #fff; background: #8e44ad; font-size:1.2rem; font-weight: bold; padding: 4px 12px; border-radius: 4px;'
+				);
+				onF2LSolved?.();
+			}
+		} else {
+			// F2L
+			if (f2lSolved) {
+				console.log(
+					'%c\u2713 F2L SOLVED!',
+					'color: #fff; background: #27ae60; font-size:1.2rem; font-weight: bold; padding: 4px 12px; border-radius: 4px;'
+				);
+				onF2LSolved?.();
+			}
 		}
 
 		if (cubeSolved) {
@@ -184,9 +224,9 @@ export async function checkF2LState(
 			onCubeSolved?.();
 		}
 
-		return { f2lSolved, cubeSolved };
+		return { f2lSolved, cubeSolved, ollSolved };
 	} catch (e) {
 		console.error('%c[F2L Check Error]', 'color: #e74c3c; font-weight: bold', e);
-		return { f2lSolved: false, cubeSolved: false };
+		return { f2lSolved: false, cubeSolved: false, ollSolved: false };
 	}
 }

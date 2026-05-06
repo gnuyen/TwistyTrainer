@@ -62,7 +62,7 @@
 	// For OLL/PLL, the 2D visualizer already rotates the image to reflect the setup move,
 	// so we suppress the y/U prefixes from the text display to avoid redundant instructions.
 	const isLastLayer = $derived(groupId.startsWith('oll') || groupId.startsWith('pll'));
-	const displayAlg = $derived(isLastLayer ? alg.replace(/^(y2?|y'|U2?|U')\s*/, '') : alg);
+	const displayAlg = $derived(isLastLayer ? alg.replace(/^(y'|y2?|U'|U2?)\s*/, '') : alg);
 
 	function cycleTrainStates(e: MouseEvent) {
 		const currentIndex = TRAIN_STATES.indexOf(caseState.trainState);

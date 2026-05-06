@@ -19,7 +19,7 @@ const config = {
 		}),
 		paths: {
 			// IMPORTANT: use your repo name here
-			base: ''
+			base: '/TwistyTrainer'
 		}
 	},
 	extensions: ['.svelte', '.svx']

@@ -361,11 +361,10 @@
 							<div class="flex flex-col gap-4">
 								<Label class="text-sm font-semibold">Configuration</Label>
 								<div class="card h-full">
-									<Label class="mb-3 text-sm font-semibold">Cube Slots</Label>
+									<Label class="mb-3 text-sm font-semibold">Handedness</Label>
 									<div class="space-y-2">
-										<Checkbox bind:checked={settings.trainSideSelection.left}>Left Slots</Checkbox>
-										<Checkbox bind:checked={settings.trainSideSelection.right}>Right Slots</Checkbox
-										>
+										<Checkbox bind:checked={settings.trainSideSelection.left}>Left Handed</Checkbox>
+										<Checkbox bind:checked={settings.trainSideSelection.right}>Right Handed</Checkbox>
 									</div>
 								</div>
 							</div>
@@ -494,7 +493,7 @@
 										>
 											<div class="flex items-center gap-2">
 												<RadioDot selected={settings.trainHintStickering === 'f2l'} />
-												<span class="text-sm text-gray-900 dark:text-white">F2L Stickering</span>
+												<span class="text-sm text-gray-900 dark:text-white">Masked Stickering</span>
 											</div>
 											<Button
 												id="btn-f2l-stickering-help"
