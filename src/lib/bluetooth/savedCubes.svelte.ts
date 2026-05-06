@@ -9,6 +9,7 @@ export interface SavedCube {
 	uuid: string; // Globally unique ID for sync (crypto.randomUUID())
 	id: string; // Bluetooth device ID (browser-specific, not synced)
 	customName: string; // User-provided name
+	deviceName?: string; // Raw Bluetooth device name (used to prevent cross-device ID collisions)
 	macAddress?: string; // MAC address if available
 	dateAdded: number; // Timestamp when added
 	lastConnected: number; // Timestamp of last connection
@@ -53,69 +54,80 @@ export const savedCubesState = {
 		// Normalize MAC address to lowercase for case-insensitive comparison
 		const normalizedMac = macAddress?.toLowerCase();
 
-		// First, check if a cube with the same MAC address already exists
-		// This handles the case where deviceId changes between connections
-		let existingMacIndex = normalizedMac ? cubes.findIndex((c) => c.macAddress?.toLowerCase() === normalizedMac) : -1;
+		// Match by MAC address, but also require device name to match when one is stored.
+		// MAC collisions happen in practice (detection errors, previous bad saves), and the
+		// device name is the ground truth for which physical cube is connecting.
+		let existingMacIndex = normalizedMac
+			? cubes.findIndex(
+					(c) =>
+						!c.deletedAt &&
+						c.macAddress?.toLowerCase() === normalizedMac &&
+						(!c.deviceName || c.deviceName === deviceName)
+				)
+			: -1;
 
-		// Also check for deviceId match (might be a stale entry)
-		const existingIdIndex = cubes.findIndex((c) => c.id === deviceId && !c.deletedAt);
+		// Match by deviceId only when the Bluetooth device name also matches.
+		// Browsers derive deviceId from hardware MAC, so two different cubes from
+		// the same manufacturer can share a deviceId. The device name is required
+		// to break the tie — entries without a stored deviceName won't match here.
+		const existingIdIndex = cubes.findIndex(
+			(c) => !c.deletedAt && c.id === deviceId && c.deviceName === deviceName
+		);
 
 		if (existingMacIndex >= 0) {
-			// Found a cube with matching MAC - update it
-			const existingCube = cubes[existingMacIndex];
-
 			// If there's a DIFFERENT entry with the same deviceId, remove it (stale entry)
 			if (existingIdIndex >= 0 && existingIdIndex !== existingMacIndex) {
 				cubes = cubes.filter((_, i) => i !== existingIdIndex);
-				// Recalculate the MAC index after removal
-				existingMacIndex = cubes.findIndex((c) => c.macAddress?.toLowerCase() === normalizedMac);
+				existingMacIndex = cubes.findIndex(
+					(c) => !c.deletedAt && c.macAddress?.toLowerCase() === normalizedMac
+				);
 			}
 
 			if (existingMacIndex >= 0) {
 				cubes[existingMacIndex] = {
 					...cubes[existingMacIndex],
-					id: deviceId, // Update deviceId in case it changed
+					id: deviceId,
+					deviceName,
 					customName: customName || cubes[existingMacIndex].customName,
 					macAddress: normalizedMac || cubes[existingMacIndex].macAddress,
 					lastConnected: now,
 					lastModified: now,
-					deletedAt: undefined // Undelete if it was soft-deleted
+					deletedAt: undefined
 				};
-				cubes = [...cubes]; // Trigger reactivity
-				
-				// Sync update
+				cubes = [...cubes];
+
 				savedCubesSyncService.updateCube(cubes[existingMacIndex].uuid, {
 					customName: cubes[existingMacIndex].customName,
 					macAddress: cubes[existingMacIndex].macAddress,
 					lastConnected: now,
 					lastModified: now,
-					deletedAt: undefined // Undelete in cloud
+					deletedAt: undefined
 				});
 			}
 		} else if (existingIdIndex >= 0) {
 			cubes[existingIdIndex] = {
 				...cubes[existingIdIndex],
+				deviceName,
 				customName: customName || cubes[existingIdIndex].customName,
 				macAddress: normalizedMac || cubes[existingIdIndex].macAddress,
 				lastConnected: now,
 				lastModified: now,
-				deletedAt: undefined // Undelete if it was soft-deleted
+				deletedAt: undefined
 			};
-			cubes = [...cubes]; // Trigger reactivity
+			cubes = [...cubes];
 
-			// Sync update
 			savedCubesSyncService.updateCube(cubes[existingIdIndex].uuid, {
 				customName: cubes[existingIdIndex].customName,
 				macAddress: cubes[existingIdIndex].macAddress,
 				lastConnected: now,
 				lastModified: now,
-				deletedAt: undefined // Undelete in cloud
+				deletedAt: undefined
 			});
 		} else {
-			// Add new cube
 			const newCube: SavedCube = {
 				uuid: crypto.randomUUID(),
 				id: deviceId,
+				deviceName,
 				customName: customName || deviceName,
 				macAddress: normalizedMac,
 				dateAdded: now,
@@ -123,8 +135,7 @@ export const savedCubesState = {
 				lastModified: now
 			};
 			cubes = [...cubes, newCube];
-			
-			// Sync add
+
 			savedCubesSyncService.addCube(newCube);
 		}
 
@@ -154,6 +165,22 @@ export const savedCubesState = {
 
 			savedCubesSyncService.updateCube(cube.uuid, {
 				customName: newName,
+				lastModified: cube.lastModified
+			});
+		}
+	},
+
+	updateCubeMac(deviceId: string, macAddress: string) {
+		const cube = cubes.find((c) => c.id === deviceId && !c.deletedAt);
+		if (cube) {
+			const normalizedMac = macAddress.trim().toLowerCase() || undefined;
+			cube.macAddress = normalizedMac;
+			cube.lastModified = Date.now();
+			cubes = [...cubes];
+			saveCubesToStorage(cubes);
+
+			savedCubesSyncService.updateCube(cube.uuid, {
+				macAddress: normalizedMac,
 				lastModified: cube.lastModified
 			});
 		}

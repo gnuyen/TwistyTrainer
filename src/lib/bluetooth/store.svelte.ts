@@ -19,7 +19,6 @@ let errorMessage = $state<string | null>(null);
 
 // Gyro state
 let gyroEnabled = $state(false);
-let gyroTopFaceYellow = $state(false);
 // Final display quaternion passed to TwistyPlayer's rAF loop
 let gyroQuat = $state<{ x: number; y: number; z: number; w: number } | null>(null);
 // Non-reactive ref updated at full gyro rate — read by rAF loop directly (Cubedex pattern)
@@ -201,12 +200,6 @@ export const bluetoothState = {
 	get gyroQuat() {
 		return gyroQuat;
 	},
-	get gyroTopFaceYellow() {
-		return gyroTopFaceYellow;
-	},
-	toggleGyroTopFace() {
-		gyroTopFaceYellow = !gyroTopFaceYellow;
-	},
 	toggleGyro() {
 		gyroEnabled = !gyroEnabled;
 		if (gyroEnabled) {
@@ -234,7 +227,7 @@ export const bluetoothState = {
 		// Reset sign-flip tracking so the first post-recalibration packet isn't
 		// compared against stale pre-recalibration values.
 		_lastQw = 1; _lastQx = 0; _lastQy = 0; _lastQz = 0;
-		console.log(`[gyro] recalibration requested — hold ${gyroTopFaceYellow ? 'yellow' : 'white'} up / green front`);
+		console.log('[gyro] recalibration requested — hold white-up / green-front');
 	},
 	/**
 	 * Called by the GAN driver with already axis-remapped quaternion data.

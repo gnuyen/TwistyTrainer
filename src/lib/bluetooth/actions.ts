@@ -11,21 +11,13 @@ export async function connectNewCube() {
 
 	try {
 		await GiikerCube.init(false, undefined);
-		// After successful connection, check if cube already exists by MAC address
+		// Auto-save or update the cube entry.
+		// addCube handles deduplication by MAC (primary) and deviceId+deviceName (secondary).
 		if (bluetoothState.deviceId && bluetoothState.deviceName) {
-			// First check by MAC address (more reliable than deviceId)
-			const existingByMac = bluetoothState.deviceMac
-				? savedCubesState.getCubeByMac(bluetoothState.deviceMac)
-				: null;
-			// Fall back to deviceId check
-			const existingById = savedCubesState.getCube(bluetoothState.deviceId);
-			const existing = existingByMac || existingById;
-
-			// Auto-save or update the cube entry
 			savedCubesState.addCube(
 				bluetoothState.deviceId,
 				bluetoothState.deviceName,
-				existing?.customName, // Keep existing name or use device name as default
+				undefined, // Let addCube preserve the existing name if this device was seen before
 				bluetoothState.deviceMac || undefined
 			);
 		}

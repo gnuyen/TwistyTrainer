@@ -160,15 +160,15 @@
 
 	const setupRotation = $derived(getRotationAlg(crossColor, frontColor));
 
+	const isOELL = $derived(groupId === 'oll2Look' && [1, 2, 3].includes(caseId ?? -1));
+
 	const stepId = $derived(
 		groupId?.toLowerCase().includes('oll')
-			? 'OLL'
+			? isOELL ? 'OLL_CROSS' : 'OLL'
 			: groupId?.toLowerCase().includes('pll')
 				? 'PLL'
 				: 'F2L'
 	);
-
-	const isOELL = $derived(groupId === 'oll2Look' && [1, 2, 3].includes(caseId ?? -1));
 
 	let stickeringString = $derived(
 		stepId === 'F2L'

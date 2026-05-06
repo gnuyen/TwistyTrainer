@@ -175,9 +175,11 @@
 	const CAMERA_POSITION_TOLERANCE = 0.1; // Tolerance for comparing camera positions
 	const TWISTY_PLAYER_INIT_DELAY = 100; // Delay in ms to ensure TwistyPlayer is fully initialized
 
+	const isOELL = $derived(groupId === 'oll2Look' && [1, 2, 3].includes(caseId ?? -1));
+
 	const stepId = $derived(
 		groupId?.toLowerCase().includes('oll')
-			? 'OLL'
+			? isOELL ? 'OLL_CROSS' : 'OLL'
 			: groupId?.toLowerCase().includes('pll')
 				? 'PLL'
 				: 'F2L'
@@ -191,8 +193,6 @@
 				: -15
 	);
 	let cameraLatitude = $derived(stepId === 'F2L' ? globalState.cameraLatitude : 60);
-
-	const isOELL = $derived(groupId === 'oll2Look' && [1, 2, 3].includes(caseId ?? -1));
 
 	let stickeringString = $derived(
 		stepId === 'F2L'

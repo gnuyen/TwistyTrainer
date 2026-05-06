@@ -144,6 +144,18 @@ function isOLLSolved(normalizedPattern: NormalizedPattern): boolean {
 	return true;
 }
 
+/**
+ * Checks if the OLL cross is formed: all 4 LL edges have correct orientation.
+ * Used for 2-look OLL edge-orientation cases (dot, line, L-shape).
+ */
+function isOLLCrossFormed(normalizedPattern: NormalizedPattern): boolean {
+	const { EDGES } = normalizedPattern.patternData;
+	for (const i of LL_EDGES) {
+		if (EDGES.orientation[i] !== 0) return false;
+	}
+	return true;
+}
+
 export interface F2LState {
 	f2lSolved: boolean;
 	cubeSolved: boolean;
@@ -161,7 +173,7 @@ export interface F2LState {
  * @param onCubeSolved - Optional callback when cube is fully solved
  * @returns The current F2L state
  */
-export type StepId = 'F2L' | 'OLL' | 'PLL';
+export type StepId = 'F2L' | 'OLL' | 'OLL_CROSS' | 'PLL';
 
 export async function checkF2LState(
 	pattern: PuzzlePattern,
@@ -189,7 +201,15 @@ export async function checkF2LState(
 		const ollSolved = isOLLSolved(normalizedPattern);
 
 		// Fire callbacks based on step type
-		if (stepId === 'OLL') {
+		if (stepId === 'OLL_CROSS') {
+			if (isOLLCrossFormed(normalizedPattern)) {
+				console.log(
+					'%c\u2713 OLL CROSS!',
+					'color: #fff; background: #e67e22; font-size:1.2rem; font-weight: bold; padding: 4px 12px; border-radius: 4px;'
+				);
+				onF2LSolved?.();
+			}
+		} else if (stepId === 'OLL') {
 			if (ollSolved) {
 				console.log(
 					'%c\u2713 OLL SOLVED!',

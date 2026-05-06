@@ -28,6 +28,15 @@ export const casesStatic = (() => {
 			});
 		});
 
+		const getScramblePool = (caseId: number): string[] => {
+			if (definition.scramblesFrom) {
+				const sourceScrambles = GROUP_SCRAMBLES[definition.scramblesFrom.groupId] ?? {};
+				const sourceCaseIds = definition.scramblesFrom.cases[caseId] ?? [];
+				return sourceCaseIds.flatMap((id) => sourceScrambles[id] ?? []);
+			}
+			return scrambles[caseId] ?? [];
+		};
+
 		const cases = Object.fromEntries(
 			collectCaseIds(groupId).map((caseId) => {
 				const category = categoryLookup.get(caseId);
@@ -39,7 +48,7 @@ export const casesStatic = (() => {
 						groupId,
 						caseId,
 						algPool: algorithms[caseId] ?? [],
-						scramblePool: scrambles[caseId] ?? [],
+						scramblePool: getScramblePool(caseId),
 						categoryName: category?.name,
 						categoryIndex: category?.categoryIndex,
 						groupName: definition.name,

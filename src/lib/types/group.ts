@@ -38,6 +38,11 @@ export interface GroupDefinition {
 	readonly caseNumberMapping?: Readonly<Record<CaseId, string>>;
 	readonly piecesToHide?: Readonly<Record<number, StickerHidden>>;
 	readonly hashOllMapping?: Readonly<Record<CaseId, string>>;
+	/** When set, scrambles for this group are drawn from the listed cases in another group. */
+	readonly scramblesFrom?: {
+		readonly groupId: GroupId;
+		readonly cases: Readonly<Record<CaseId, readonly CaseId[]>>;
+	};
 }
 
 const BASIC_DEFINITION: GroupDefinition = {
@@ -255,6 +260,24 @@ const OLL_2LOOK_DEFINITION: GroupDefinition = {
 		9: 'LO',
 		10: 'HO'
 	}*/
+	// Scrambles drawn from full OLL so cases end in varied states (not all-solved).
+	// Edge cases (1–3) map to all full OLL cases sharing that edge-orientation pattern.
+	// Corner cases (4–10) map 1-to-1 to the matching full OLL cross case (21–27).
+	scramblesFrom: {
+		groupId: 'ollFull',
+		cases: {
+			1:  [1, 2, 3, 4, 17, 18, 19, 20],
+			2:  [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 53, 54],
+			3:  [51, 52, 55, 56],
+			4:  [27],  // Sune  (hashOll SO)
+			5:  [26],  // Antisune (AO)
+			6:  [22],  // Pi (PO)
+			7:  [23],  // U (UO)
+			8:  [24],  // T (TO)
+			9:  [25],  // L (LO)
+			10: [21],  // H (HO)
+		}
+	}
 } as const;
 
 const OLL_FULL_DEFINITION: GroupDefinition = {
@@ -306,6 +329,20 @@ const PLL_2LOOK_DEFINITION: GroupDefinition = {
 		4: 'Ub',
 		5: 'Z',
 		6: 'H'
+	},
+	// Scrambles drawn from full PLL so cases end in varied states.
+	// Corner cases (1–2) map to all full PLL cases with that corner-permutation type.
+	// Edge cases (3–6) map 1-to-1 to the matching full PLL edges-only case.
+	scramblesFrom: {
+		groupId: 'pllFull',
+		cases: {
+			1: [5, 6, 8, 9, 10, 11, 12, 13, 18, 19, 20, 21],  // T — all adjacent corner swap
+			2: [7, 14, 15, 16, 17],                             // Y — all diagonal corner swap
+			3: [1],   // Ua
+			4: [2],   // Ub
+			5: [3],   // Z
+			6: [4],   // H
+		}
 	}
 } as const;
 

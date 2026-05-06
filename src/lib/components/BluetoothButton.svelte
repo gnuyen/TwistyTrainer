@@ -72,25 +72,11 @@
 			<Compass class="size-6" />
 		</Button>
 		{#if bluetoothState.gyroEnabled}
-			<!-- Top-face toggle: W = white on top, Y = yellow on top -->
-			<Button
-				class="border border-l-0 border-gray-200 bg-white px-2 py-1.5 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700 {bluetoothState.gyroTopFaceYellow
-					? 'text-yellow-400 dark:text-yellow-300'
-					: 'text-gray-500 dark:text-gray-400'}"
-				onclick={() => bluetoothState.toggleGyroTopFace()}
-				title={bluetoothState.gyroTopFaceYellow
-					? 'Calibrating yellow-up — click to switch to white-up'
-					: 'Calibrating white-up — click to switch to yellow-up'}
-			>
-				<span class="text-xs font-bold leading-none">{bluetoothState.gyroTopFaceYellow ? 'Y' : 'W'}</span>
-			</Button>
-			<!-- Recalibrate: hold the selected top face up / green-front and click -->
+			<!-- Recalibrate: hold cube white-up / green-front and click -->
 			<Button
 				class="border border-l-0 border-gray-200 bg-white px-2 py-1.5 text-gray-900 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
 				onclick={() => bluetoothState.recalibrateGyro()}
-				title={bluetoothState.gyroTopFaceYellow
-					? 'Recalibrate gyro — hold cube yellow-up / green-front, then click'
-					: 'Recalibrate gyro — hold cube white-up / green-front, then click'}
+				title="Recalibrate gyro — hold cube white-up / green-front, then click"
 			>
 				<RotateCcw class="size-5" />
 			</Button>

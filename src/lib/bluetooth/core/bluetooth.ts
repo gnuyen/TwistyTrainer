@@ -128,17 +128,25 @@ export function createBluetoothManager(): BluetoothCube {
 				}
 
 				if (!expectedMac) {
+					// Only reuse a saved MAC when device name also matches — deviceId alone
+					// can collide across different physical cubes from the same manufacturer.
 					const savedCube = savedCubesState.getCube(device.id);
-					if (savedCube && savedCube.macAddress) {
+					if (savedCube && savedCube.macAddress && savedCube.deviceName === device.name) {
 						giikerutil.log('[bluetooth]', 'Device already saved, using known MAC: ' + savedCube.macAddress);
 						expectedMac = savedCube.macAddress;
 					}
 				} else {
 					// User clicked "Connect" on a specific cube, so expectedMac was provided.
 					// BUT they might have selected a DIFFERENT cube in the pairing dialog!
-					// If the device they actually selected is already known, use its MAC instead.
+					// If the device they actually selected is already known, use its MAC instead —
+					// but only when the device name also matches to avoid cross-device collisions.
 					const actualSavedCube = savedCubesState.getCube(device.id);
-					if (actualSavedCube && actualSavedCube.macAddress && actualSavedCube.macAddress !== expectedMac) {
+					if (
+						actualSavedCube &&
+						actualSavedCube.macAddress &&
+						actualSavedCube.macAddress !== expectedMac &&
+						actualSavedCube.deviceName === device.name
+					) {
 						giikerutil.log('[bluetooth]', 'Warning: User selected a different known device. Changing expected MAC to: ' + actualSavedCube.macAddress);
 						expectedMac = actualSavedCube.macAddress;
 					}
@@ -231,6 +239,7 @@ export function createBluetoothManager(): BluetoothCube {
 				bluetoothState.setConnected(false);
 				bluetoothState.setDeviceName(null);
 				bluetoothState.setDeviceId(null);
+				bluetoothState.setDeviceMac(null);
 				if (isHardwareEvent) {
 					bluetoothState.setErrorMessage('Cube disconnected unexpectedly. Please reconnect.');
 				}

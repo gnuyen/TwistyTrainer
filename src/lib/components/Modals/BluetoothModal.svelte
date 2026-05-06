@@ -18,6 +18,7 @@
 
 	let editingCubeId = $state<string | null>(null);
 	let editingCubeName = $state('');
+	let editingCubeMac = $state('');
 	let removeCubeModal: RemoveCubeModal;
 	let feedbackModal: FeedbackModal;
 
@@ -97,11 +98,14 @@
 		}
 	}
 
+	const MAC_PATTERN = /^([0-9a-f]{2}:){5}[0-9a-f]{2}$/i;
+
 	function startEditingCube(deviceId: string) {
 		const cube = savedCubesState.getCube(deviceId);
 		if (cube) {
 			editingCubeId = deviceId;
 			editingCubeName = cube.customName;
+			editingCubeMac = cube.macAddress ?? '';
 		}
 	}
 
@@ -110,19 +114,27 @@
 
 		const trimmedName = editingCubeName.trim();
 		if (!trimmedName) {
-			// Don't allow empty names - revert to original
 			cancelEditCube();
 			return;
 		}
 
+		const trimmedMac = editingCubeMac.trim();
+		if (trimmedMac && !MAC_PATTERN.test(trimmedMac)) {
+			// Invalid MAC — don't save, leave edit open
+			return;
+		}
+
 		savedCubesState.renameCube(editingCubeId, trimmedName);
+		savedCubesState.updateCubeMac(editingCubeId, trimmedMac);
 		editingCubeId = null;
 		editingCubeName = '';
+		editingCubeMac = '';
 	}
 
 	function cancelEditCube() {
 		editingCubeId = null;
 		editingCubeName = '';
+		editingCubeMac = '';
 	}
 
 	function formatDate(timestamp: number): string {
@@ -193,7 +205,19 @@
 							class:dark:border-gray-700={!isConnectedCube}
 						>
 							{#if editingCubeId === cube.id}
-								<Input type="text" bind:value={editingCubeName} class="flex-1" maxlength={40} />
+								<div class="flex flex-1 flex-col gap-1.5">
+									<Input type="text" bind:value={editingCubeName} class="w-full" maxlength={40} placeholder="Cube name" />
+									<Input
+										type="text"
+										bind:value={editingCubeMac}
+										class="w-full font-mono text-xs"
+										placeholder="MAC address (e.g. aa:bb:cc:dd:ee:ff)"
+										pattern={MAC_PATTERN.source}
+									/>
+									{#if editingCubeMac.trim() && !MAC_PATTERN.test(editingCubeMac.trim())}
+										<p class="text-xs text-red-500">Invalid MAC — use format aa:bb:cc:dd:ee:ff</p>
+									{/if}
+								</div>
 								<Button size="xs" color="green" onclick={saveEditCube}>
 									<Check class="size-4" />
 								</Button>
