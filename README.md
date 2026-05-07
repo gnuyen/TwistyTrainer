@@ -1,12 +1,10 @@
-# CFOP Trainer 🧩
+# Twisty Trainer🧩
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Svelte](https://img.shields.io/badge/Svelte-5.0-orange.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)
 
 **A comprehensive speedcubing training application for CFOP (F2L, OLL, PLL), featuring 2D/3D cube rendering, algorithmic training, and smart cube integration.**
-
-> 🚀 **[Live Demo](https://gnuyen.github.io/TwistyTrainer/)**
 
 ## ✨ Features
 
