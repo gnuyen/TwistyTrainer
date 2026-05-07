@@ -5,6 +5,7 @@
 	import SelectView from '$lib/components/SelectView/SelectView.svelte';
 	import ChangeViewButton from '$lib/components/ChangeViewButton.svelte';
 	import TrainView from '$lib/components/TrainView/TrainView.svelte';
+	import TimerView from '$lib/components/Timer/TimerView.svelte';
 
 	import Settings from '$lib/components/Modals/Settings.svelte';
 	import FeedbackModal from '$lib/components/Modals/FeedbackModal.svelte';
@@ -52,6 +53,8 @@
 			<SelectView />
 			<!-- Spacer to ensure content isn't hidden behind the floating button -->
 			<div class="h-20 w-full shrink-0"></div>
+		{:else if globalState.view === 'timer'}
+			<TimerView />
 		{:else}
 			<TrainView />
 		{/if}

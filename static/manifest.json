@@ -1,6 +1,6 @@
 {
-  "name": "CFOP Trainer",
-  "short_name": "CFOP Trainer",
+  "name": "TwistyTrainer",
+  "short_name": "TwistyTrainer",
   "description": "Tool for learning and practicing F2L cases.",
   "start_url": "/",
   "icons": [

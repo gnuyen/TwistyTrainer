@@ -17,13 +17,16 @@
 		ChartNoAxesCombined,
 		CircleQuestionMark,
 		CloudUpload,
+		GraduationCap,
 		LogIn,
 		LogOut,
 		MessageCircle,
 		Settings as SettingsIcon,
 		Share2,
 		ShieldCheck,
-		UserRound
+		UserRound,
+		Timer,
+		ChevronDown
 	} from '@lucide/svelte';
 	import BluetoothButton from '$lib/components/BluetoothButton.svelte';
 	import PwaInstall from '$lib/components/PwaInstall.svelte';
@@ -45,12 +48,19 @@
 	let currentTheme = $derived(getTheme());
 	let isSyncing = $derived(globalState.isSyncing);
 
+	let showTrainingDropdown = $state(false);
+
 	let appearance = $derived({
 		baseTheme: currentTheme === 'dark' ? dark : undefined
 	});
 
 	const ctx = useClerkContext();
 </script>
+
+<svelte:window
+	onclick={() => (showTrainingDropdown = false)}
+	onkeydown={(e) => e.key === 'Escape' && (showTrainingDropdown = false)}
+/>
 
 <Navbar
 	breakpoint="sm"
@@ -59,10 +69,10 @@
 	class="relative z-50 bg-gray-100 px-4 py-2 sm:py-0 sm:pr-0 md:pr-2 dark:bg-gray-900"
 >
 	<NavBrand>
-		<img src={resolve(`/logo.svg`, {})} class="me-3 h-9 md:h-12" alt="CFOP Trainer Logo" />
+		<img src={resolve(`/logo.svg`, {})} class="me-3 h-9 md:h-12" alt="TwistyTrainer Logo" />
 		<span
 			class="hidden self-center text-xl font-semibold whitespace-nowrap md:text-3xl xl:block dark:text-white"
-			>CFOP Trainer</span
+			>TwistyTrainer</span
 		>
 	</NavBrand>
 	<div class="ml-auto flex items-center gap-2">
@@ -74,6 +84,82 @@
 		/>
 	</div>
 	<NavUl>
+		<!-- Timer button -->
+		<li class="mx-1 my-2 sm:my-0 xl:mx-3">
+			<Button
+				class="btn-icon-transparent flex items-center justify-start"
+				onclick={() => (globalState.view = 'timer')}
+			>
+				<Timer class="size-8 text-primary-600 md:size-9" />
+				<span class="ml-2 text-lg font-medium text-gray-900 sm:hidden xl:inline dark:text-white"
+					>Timer</span
+				>
+			</Button>
+			<Tooltip placement="bottom">Free-Play Timer</Tooltip>
+		</li>
+
+		<!-- Training dropdown -->
+		<li class="relative mx-1 my-2 sm:my-0 xl:mx-3">
+			<Button
+				id="training-dropdown-btn"
+				class="btn-icon-transparent flex items-center justify-start"
+				onclick={(e: MouseEvent) => {
+					e.stopPropagation();
+					showTrainingDropdown = !showTrainingDropdown;
+				}}
+			>
+				<GraduationCap class="size-8 text-primary-600 md:size-9" />
+				<span class="ml-2 text-lg font-medium text-gray-900 sm:hidden xl:inline dark:text-white"
+					>Training</span
+				>
+				<ChevronDown class="ml-1 size-4 text-primary-600" />
+			</Button>
+			{#if showTrainingDropdown}
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
+				<div
+					class="absolute top-full left-0 z-50 mt-1 min-w-[120px] rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800"
+					role="menu"
+					tabindex="0"
+					onclick={(e) => e.stopPropagation()}
+					onkeydown={(e) => e.key === 'Escape' && (showTrainingDropdown = false)}
+				>
+					<button
+						type="button"
+						class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+						onclick={() => {
+							showTrainingDropdown = false;
+							globalState.selectedStep = 'F2L';
+							globalState.view = 'select';
+						}}
+					>
+						F2L
+					</button>
+					<button
+						type="button"
+						class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+						onclick={() => {
+							showTrainingDropdown = false;
+							globalState.selectedStep = 'OLL';
+							globalState.view = 'select';
+						}}
+					>
+						OLL
+					</button>
+					<button
+						type="button"
+						class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+						onclick={() => {
+							showTrainingDropdown = false;
+							globalState.selectedStep = 'PLL';
+							globalState.view = 'select';
+						}}
+					>
+						PLL
+					</button>
+				</div>
+			{/if}
+		</li>
+
 		<li class="mx-1 my-2 sm:my-0 xl:mx-3">
 			<Button
 				class="btn-icon-transparent flex items-center justify-start"

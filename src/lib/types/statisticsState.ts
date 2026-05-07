@@ -16,7 +16,7 @@ export type Solve = {
 	sessionId?: string;
 	// Drill mode timing (optional - only set for drill mode solves)
 	recognitionTime?: number; // Time from case display to first non-U move (centiseconds)
-	executionTime?: number; // Time from first non-U move to F2L solved (centiseconds)
+	executionTime?: number; // Time from first non-U move to case solved (centiseconds)
 	trainMode: TrainMode;
 	// Soft delete field
 	deletedAt?: number; // If set, solve is deleted

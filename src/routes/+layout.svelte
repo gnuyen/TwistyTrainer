@@ -51,14 +51,14 @@
 	localization={{
 		signIn: {
 			start: {
-				title: 'Welcome to CFOP Trainer',
+				title: 'Welcome to TwistyTrainer',
 				subtitle:
 					'Sign in to sync your progress across devices, track your solve history, and never lose your training data.'
 			}
 		},
 		signUp: {
 			start: {
-				title: 'Join CFOP Trainer',
+				title: 'Join TwistyTrainer',
 				subtitle:
 					'Create an account to unlock cloud sync, cross-device progress tracking, and detailed solve statistics.'
 			}

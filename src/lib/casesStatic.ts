@@ -32,9 +32,18 @@ export const casesStatic = (() => {
 			if (definition.scramblesFrom) {
 				const sourceScrambles = GROUP_SCRAMBLES[definition.scramblesFrom.groupId] ?? {};
 				const sourceCaseIds = definition.scramblesFrom.cases[caseId] ?? [];
-				return sourceCaseIds.flatMap((id) => sourceScrambles[id] ?? []);
+				const pool = sourceCaseIds.flatMap((id) => sourceScrambles[id] ?? []);
+				if (pool.length > 0) return pool;
 			}
-			return scrambles[caseId] ?? [];
+			const directPool = scrambles[caseId] ?? [];
+			if (directPool.length === 0) {
+				console.warn(
+					`[casesStatic] Empty scramble pool for ${groupId}/${caseId}. ` +
+					`The group may rely on scramblesFrom mapping that produced no results, ` +
+					`or have no direct scrambles defined.`
+				);
+			}
+			return directPool;
 		};
 
 		const cases = Object.fromEntries(

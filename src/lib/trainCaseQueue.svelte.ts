@@ -1,3 +1,11 @@
+import { casesState } from './casesState.svelte';
+import { sessionState, DEFAULT_SETTINGS } from '$lib/sessionState.svelte';
+import { statisticsState } from '$lib/statisticsState.svelte';
+
+import TrainCase, { generateTrainCases } from './trainCases';
+import { GROUP_DEFINITIONS, type GroupId } from './types/group';
+import type { SessionSettings } from './types/session';
+
 export function getNumberOfSelectedCasesFromSelections(
 	trainGroupSelection: Record<string, boolean>,
 	trainStateSelection: Record<string, boolean>
@@ -17,17 +25,11 @@ export function getNumberOfSelectedCasesFromSelections(
 	}
 	return count;
 }
-import { casesState } from './casesState.svelte';
-import { sessionState, DEFAULT_SETTINGS } from '$lib/sessionState.svelte';
-
-import TrainCase, { gernerateTrainCases } from './trainCases';
-import { GROUP_DEFINITIONS, type GroupId } from './types/group';
-import type { SessionSettings } from './types/session';
 
 export const trainCaseQueue = $state<TrainCase[]>([]);
 
 function createInitialTrainCase(): TrainCase | undefined {
-	const cases = gernerateTrainCases();
+	const cases = generateTrainCases();
 	trainCaseQueue.length = 0;
 	trainCaseQueue.push(...cases);
 	// If no train cases were generated, throw a clear error or return a fallback.
@@ -53,7 +55,7 @@ export const trainState: {
 });
 
 export function regenerateTrainCaseQueue(): number {
-	const cases = gernerateTrainCases();
+	const cases = generateTrainCases();
 	trainCaseQueue.length = 0;
 	trainCaseQueue.push(...cases);
 	trainState.index = 0;
@@ -74,10 +76,14 @@ export function regenerateTrainCaseQueue(): number {
 export function advanceToNextTrainCase() {
 	const next = trainState.index + 1;
 	if (next >= trainCaseQueue.length) {
-		const newTrainCases = gernerateTrainCases();
+		// Trim old entries to prevent unbounded queue growth
+		if (trainState.index > 0) {
+			trainCaseQueue.splice(0, trainState.index);
+		}
+		const newTrainCases = generateTrainCases();
 		if (newTrainCases.length > 0) {
 			trainCaseQueue.push(...newTrainCases);
-			trainState.index = next;
+			trainState.index = trainCaseQueue.length - newTrainCases.length;
 		} else {
 			// No further cases; clamp to last valid index
 			trainState.index = Math.max(0, trainCaseQueue.length - 1);
@@ -88,8 +94,6 @@ export function advanceToNextTrainCase() {
 	}
 	trainState.current = trainCaseQueue[trainState.index];
 }
-
-import { statisticsState } from '$lib/statisticsState.svelte';
 
 export function advanceToPreviousTrainCase() {
 	const prev = trainState.index - 1;

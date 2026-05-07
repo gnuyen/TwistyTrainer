@@ -7,7 +7,7 @@ export async function connectNewCube() {
 
 	bluetoothState.setIsConnecting(true);
 	bluetoothState.setErrorMessage(null);
-	console.log('[F2LTrainer] Connecting to new cube...');
+	console.log('[TwistyTrainer] Connecting to new cube...');
 
 	try {
 		await GiikerCube.init(false, undefined);
@@ -21,13 +21,13 @@ export async function connectNewCube() {
 				bluetoothState.deviceMac || undefined
 			);
 		}
-		console.log('[F2LTrainer] Successfully connected to new cube:', bluetoothState.deviceName);
+		console.log('[TwistyTrainer] Successfully connected to new cube:', bluetoothState.deviceName);
 	} catch (e: any) {
 		if (e.message !== 'MAC address required') {
-			console.error('[F2LTrainer] Connection failed:', e);
+			console.error('[TwistyTrainer] Connection failed:', e);
 			bluetoothState.setErrorMessage(e.toString());
 		} else {
-			console.log('[F2LTrainer] Connection cancelled by user (MAC required)');
+			console.log('[TwistyTrainer] Connection cancelled by user (MAC required)');
 		}
 	} finally {
 		bluetoothState.setIsConnecting(false);
@@ -40,7 +40,7 @@ export async function connectSavedCube(deviceId: string) {
 	const saved = savedCubesState.getCube(deviceId);
 	if (!saved) return;
 
-	console.log('[F2LTrainer] Connecting to saved cube:', saved.customName, 'MAC:', saved.macAddress);
+	console.log('[TwistyTrainer] Connecting to saved cube:', saved.customName, 'MAC:', saved.macAddress);
 	bluetoothState.setIsConnecting(true);
 	bluetoothState.setErrorMessage(null);
 
@@ -62,9 +62,9 @@ export async function connectSavedCube(deviceId: string) {
 		} else {
 			savedCubesState.updateLastConnected(deviceId);
 		}
-		console.log('[F2LTrainer] Successfully connected to saved cube:', saved.customName);
+		console.log('[TwistyTrainer] Successfully connected to saved cube:', saved.customName);
 	} catch (e: any) {
-		console.error('[F2LTrainer] Connection to saved cube failed:', e);
+		console.error('[TwistyTrainer] Connection to saved cube failed:', e);
 		bluetoothState.setErrorMessage(e.toString());
 	} finally {
 		bluetoothState.setIsConnecting(false);
@@ -72,12 +72,12 @@ export async function connectSavedCube(deviceId: string) {
 }
 
 export async function disconnectCube() {
-	console.log('[F2LTrainer] User requested disconnect');
+	console.log('[TwistyTrainer] User requested disconnect');
 	try {
 		await GiikerCube.stop();
-		console.log('[F2LTrainer] Disconnected successfully');
+		console.log('[TwistyTrainer] Disconnected successfully');
 	} catch (e: any) {
-		console.warn('[F2LTrainer] Disconnect error:', e);
+		console.warn('[TwistyTrainer] Disconnect error:', e);
 		// Don't show error to user - disconnect errors are usually harmless
 	}
 }

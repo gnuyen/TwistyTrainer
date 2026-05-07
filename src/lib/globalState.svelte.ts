@@ -15,7 +15,7 @@ const createCollapsedCategories = (): Record<GroupId, boolean[]> =>
 // Load only EPHEMERAL/GLOBAL UI state from local storage.
 // We no longer load settings from here, as they come from sessionState.
 interface EphemeralState {
-	view: 'select' | 'train';
+	view: 'select' | 'train' | 'timer';
 	categoriesOpenedObj: Record<GroupId, boolean[]>;
 	selectedStep: StepId;
 	selectedGroup: GroupId;

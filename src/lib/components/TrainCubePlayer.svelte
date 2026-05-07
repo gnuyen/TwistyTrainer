@@ -12,21 +12,27 @@
 	import type { Side } from '$lib/types/Side';
 	import type { StickerColor } from '$lib/types/stickering';
 	import type { Auf } from '$lib/types/trainCase';
-	import { concatinateAuf } from '$lib/utils/addAuf';
+	import { concatenateAuf } from '$lib/utils/addAuf';
 	import { simplifyAlg } from '$lib/utils/simplifyAlg';
 	import { onMount, onDestroy } from 'svelte';
 	import { Eye, EyeOff } from '@lucide/svelte';
 	import { setupTwistyPlayerClickHandlers } from '$lib/utils/twistyPlayerClickHandler';
 	import type { HintStickering } from '$lib/types/globalState';
-	import { checkF2LState } from '$lib/utils/checkSolvedState';
+	import { checkSolveState } from '$lib/utils/checkSolvedState';
 	import { bluetoothState } from '$lib/bluetooth/store.svelte';
 
 	// ── Cubedex orientation constants (precomputed from THREE.Euler) ─────────
 	// HOME_ORIENTATION = Euler(15°, -5°, 0): natural gyro resting position.
 	// When the user holds the cube in the calibrated pose, this is what they see.
-	const HW = 0.99051, HX = 0.13040, HY = -0.04325, HZ = 0.005694;
+	const HW = 0.99051,
+		HX = 0.1304,
+		HY = -0.04325,
+		HZ = 0.005694;
 	// DR_LOCK_ORIENTATION = Euler(15°, -20°, 0): static view when gyro is off.
-	const DW = 0.97638, DX = 0.12853, DY = -0.17216, DZ = 0.022669;
+	const DW = 0.97638,
+		DX = 0.12853,
+		DY = -0.17216,
+		DZ = 0.022669;
 
 	interface Props {
 		groupId?: GroupId;
@@ -49,7 +55,7 @@
 		showVisibilityToggle?: boolean;
 		tempoScale?: number;
 		showAlg?: boolean;
-		onF2LSolved?: () => void;
+		onPhaseSolved?: () => void;
 		onCubeSolved?: () => void;
 		backView?: 'none' | 'floating';
 		backViewEnabled?: boolean;
@@ -66,7 +72,7 @@
 		side,
 		crossColor = 'white',
 		frontColor = 'red',
-		stickering = 'f2l',
+		stickering = 'masked',
 		controlPanel = 'none',
 		experimentalDragInput = 'none',
 		scramble = $bindable(''),
@@ -77,7 +83,7 @@
 		showVisibilityToggle = false,
 		tempoScale = 1,
 		showAlg = true,
-		onF2LSolved,
+		onPhaseSolved,
 		onCubeSolved,
 		backView = 'none',
 		backViewEnabled = false,
@@ -85,7 +91,7 @@
 	}: Props = $props();
 
 	let rawMovesAdded = $state('');
-	const enableF2LCheck = $derived(!!(onF2LSolved || onCubeSolved));
+	const enableSolveCheck = $derived(!!(onPhaseSolved || onCubeSolved));
 
 	let el: HTMLElement;
 	let isPlayerInitialized = $state(false);
@@ -121,7 +127,7 @@
 
 	$effect(() => {
 		if (scrambleWithoutAUF !== undefined && algWithoutAUF !== undefined) {
-			const [newScramble, newAlg] = concatinateAuf(scrambleWithoutAUF, algWithoutAUF, auf);
+			const [newScramble, newAlg] = concatenateAuf(scrambleWithoutAUF, algWithoutAUF, auf);
 			scramble = newScramble;
 			if (showAlg) {
 				alg = simplifyAlg(newAlg);
@@ -164,7 +170,9 @@
 
 	const stepId = $derived(
 		groupId?.toLowerCase().includes('oll')
-			? isOELL ? 'OLL_CROSS' : 'OLL'
+			? isOELL
+				? 'OLL_CROSS'
+				: 'OLL'
 			: groupId?.toLowerCase().includes('pll')
 				? 'PLL'
 				: 'F2L'
@@ -172,7 +180,7 @@
 
 	let stickeringString = $derived(
 		stepId === 'F2L'
-			? stickering === 'f2l' && staticData
+			? stickering === 'masked' && staticData
 				? getStickeringString(staticData.pieceToHide, side, crossColor, frontColor)
 				: undefined
 			: getLLStickeringString(crossColor, isOELL)
@@ -251,14 +259,14 @@
 					player.experimentalStickeringMaskOrbits = stickeringString;
 				}
 
-				if (enableF2LCheck && kpuzzle && staticData) {
-					await checkF2LState(
+				if (enableSolveCheck && kpuzzle && staticData) {
+					await checkSolveState(
 						{ kpuzzle },
 						scramble,
 						rawMovesAdded,
 						staticData.pieceToHide,
 						side,
-						onF2LSolved,
+						onPhaseSolved,
 						onCubeSolved,
 						stepId
 					);
@@ -271,7 +279,12 @@
 
 	// Left-multiply by HOME_ORIENTATION: result = HOME * q
 	// Returns [w, x, y, z]
-	function mulHome(rw: number, rx: number, ry: number, rz: number): [number, number, number, number] {
+	function mulHome(
+		rw: number,
+		rx: number,
+		ry: number,
+		rz: number
+	): [number, number, number, number] {
 		return [
 			HW * rw - HX * rx - HY * ry - HZ * rz,
 			HW * rx + HX * rw + HY * rz - HZ * ry,

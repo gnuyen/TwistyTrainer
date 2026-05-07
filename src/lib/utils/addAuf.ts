@@ -20,7 +20,7 @@ export function addAuf(scramble: string, alg: string): [string, string, Auf] {
 
 	if (aufScramble === '') return [scramble, alg, aufScramble];
 
-	const [finalScramble, finalAlg] = concatinateAuf(scramble, alg, aufScramble);
+	const [finalScramble, finalAlg] = concatenateAuf(scramble, alg, aufScramble);
 
 	// console.log("Scramble before: ", scramble);
 	// console.log("Alg before: ", alg);
@@ -31,7 +31,7 @@ export function addAuf(scramble: string, alg: string): [string, string, Auf] {
 	return [finalScramble, finalAlg, aufScramble];
 }
 
-export function concatinateAuf(scramble: string, alg: string, auf: Auf): [string, string] {
+export function concatenateAuf(scramble: string, alg: string, auf: Auf): [string, string] {
 	if (auf === '') return [scramble, alg];
 
 	// Scramble

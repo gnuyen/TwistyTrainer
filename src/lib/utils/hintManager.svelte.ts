@@ -71,7 +71,7 @@ export class HintManager {
 		const algViewerElement = algViewerContainer?.querySelector('twisty-alg-viewer');
 		const algMoveElements = algViewerElement?.querySelectorAll('.twisty-alg-move');
 
-		// First click - initialize counter
+		// First click - initialize counter to 0 (no moves revealed yet)
 		if (this.state.counter === -1) {
 			this.state.counter = 0;
 		}
@@ -94,14 +94,18 @@ export class HintManager {
 					algMoveElements.forEach((element: Element) => {
 						(element as HTMLElement).style.visibility = 'hidden';
 					});
-				}
-
-				// Show one move at a time
-				const maxViewerMoves = algMoveElements.length;
-				const maxMoves = Math.max(algList.length, maxViewerMoves);
-				if (this.state.counter < maxMoves && algMoveElements[this.state.counter]) {
-					(algMoveElements[this.state.counter] as HTMLElement).style.visibility = 'visible';
-					this.state.counter++;
+					// Reveal first move immediately on first click
+					if (algMoveElements[0]) {
+						(algMoveElements[0] as HTMLElement).style.visibility = 'visible';
+					}
+					this.state.counter = 1;
+				} else {
+					// Show one additional move per click
+					const maxViewerMoves = algMoveElements.length;
+					if (this.state.counter < maxViewerMoves && algMoveElements[this.state.counter]) {
+						(algMoveElements[this.state.counter] as HTMLElement).style.visibility = 'visible';
+						this.state.counter++;
+					}
 				}
 			} else if (hintMode === 'allAtOnce') {
 				// "Reveal all at once"
@@ -122,12 +126,13 @@ export class HintManager {
 	getDisplayedAlgorithm(hintMode: HintAlgorithm, alg: string): string {
 		if (hintMode === 'always') {
 			return alg;
-		} else if (this.state.counter === -1) {
+		} else if (this.state.counter <= 0) {
 			return '';
 		} else if (hintMode === 'allAtOnce') {
 			return alg;
 		} else if (hintMode === 'step') {
 			const algList = alg.split(' ').filter((move) => move.trim() !== '');
+			// counter tracks the number of moves revealed (1-based for step mode)
 			return algList.slice(0, this.state.counter).join(' ');
 		}
 		return '';

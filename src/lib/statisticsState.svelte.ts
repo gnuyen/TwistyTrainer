@@ -201,7 +201,10 @@ class StatisticsStateManager {
 	}
 
 	get statistics() {
-		if (sessionState.activeSessionId === null) return [];
+		if (sessionState.activeSessionId === null) {
+			console.warn('[StatisticsState] No active session, returning all non-deleted solves');
+			return this.allSolves.filter((s) => !s.deletedAt);
+		}
 		return this.allSolves.filter(
 			(s) => s.sessionId === sessionState.activeSessionId && !s.deletedAt
 		);

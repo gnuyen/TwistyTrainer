@@ -10,13 +10,13 @@
 	import type { Side } from '$lib/types/Side';
 	import type { StickerColor } from '$lib/types/stickering';
 	import type { Auf } from '$lib/types/trainCase';
-	import { concatinateAuf } from '$lib/utils/addAuf';
+	import { concatenateAuf } from '$lib/utils/addAuf';
 	import { simplifyAlg } from '$lib/utils/simplifyAlg';
 	import { onMount, onDestroy } from 'svelte';
 	import { RotateCw, Eye, EyeOff } from '@lucide/svelte';
 	import { setupTwistyPlayerClickHandlers } from '$lib/utils/twistyPlayerClickHandler';
 	import type { HintStickering } from '$lib/types/globalState';
-	import { checkF2LState } from '$lib/utils/checkSolvedState';
+	import { checkSolveState } from '$lib/utils/checkSolvedState';
 	import { globalState } from '$lib/globalState.svelte';
 	import { bluetoothState } from '$lib/bluetooth/store.svelte';
 
@@ -43,7 +43,7 @@
 		showVisibilityToggle?: boolean;
 		tempoScale?: number;
 		showAlg?: boolean;
-		onF2LSolved?: () => void;
+		onPhaseSolved?: () => void;
 		onCubeSolved?: () => void;
 		backView?: 'none' | 'floating';
 		backViewEnabled?: boolean;
@@ -60,7 +60,7 @@
 		side,
 		crossColor = 'white',
 		frontColor = 'red',
-		stickering = 'f2l',
+		stickering = 'masked',
 		controlPanel = 'none',
 		experimentalDragInput = 'none',
 		scramble = $bindable(''),
@@ -71,7 +71,7 @@
 		showVisibilityToggle = false,
 		tempoScale = 1,
 		showAlg = true,
-		onF2LSolved,
+		onPhaseSolved,
 		onCubeSolved,
 		backView = 'none',
 		backViewEnabled = false,
@@ -82,7 +82,7 @@
 	let rawMovesAdded = $state('');
 
 	// Derive whether F2L check is enabled from presence of callbacks
-	const enableF2LCheck = $derived(!!(onF2LSolved || onCubeSolved));
+	const enableSolveCheck = $derived(!!(onPhaseSolved || onCubeSolved));
 
 	// Allow parent components to grab the raw <twisty-player> element if needed
 	let el: HTMLElement;
@@ -122,7 +122,7 @@
 
 	$effect(() => {
 		if (scrambleWithoutAUF !== undefined && algWithoutAUF !== undefined) {
-			const [newScramble, newAlg] = concatinateAuf(scrambleWithoutAUF, algWithoutAUF, auf);
+			const [newScramble, newAlg] = concatenateAuf(scrambleWithoutAUF, algWithoutAUF, auf);
 			scramble = newScramble;
 			if (showAlg) {
 				alg = simplifyAlg(newAlg);
@@ -179,7 +179,9 @@
 
 	const stepId = $derived(
 		groupId?.toLowerCase().includes('oll')
-			? isOELL ? 'OLL_CROSS' : 'OLL'
+			? isOELL
+				? 'OLL_CROSS'
+				: 'OLL'
 			: groupId?.toLowerCase().includes('pll')
 				? 'PLL'
 				: 'F2L'
@@ -196,7 +198,7 @@
 
 	let stickeringString = $derived(
 		stepId === 'F2L'
-			? stickering === 'f2l' && staticData
+			? stickering === 'masked' && staticData
 				? getStickeringString(staticData.pieceToHide, side, crossColor, frontColor)
 				: undefined
 			: getLLStickeringString(crossColor, isOELL)
@@ -342,20 +344,28 @@
 		const targetQuat = { x: 0, y: 0, z: 0, w: 1 };
 
 		function slerpPuzzleQuatInPlace(pq: any, tgt: { x: number; y: number; z: number; w: number }) {
-			const dot = pq.x*tgt.x + pq.y*tgt.y + pq.z*tgt.z + pq.w*tgt.w;
+			const dot = pq.x * tgt.x + pq.y * tgt.y + pq.z * tgt.z + pq.w * tgt.w;
 			const sign = dot < 0 ? -1 : 1;
 			const alpha = 0.25;
-			pq.x += alpha * (sign*tgt.x - pq.x);
-			pq.y += alpha * (sign*tgt.y - pq.y);
-			pq.z += alpha * (sign*tgt.z - pq.z);
-			pq.w += alpha * (sign*tgt.w - pq.w);
-			const m = Math.sqrt(pq.x*pq.x + pq.y*pq.y + pq.z*pq.z + pq.w*pq.w);
-			if (m > 0) { pq.x /= m; pq.y /= m; pq.z /= m; pq.w /= m; }
+			pq.x += alpha * (sign * tgt.x - pq.x);
+			pq.y += alpha * (sign * tgt.y - pq.y);
+			pq.z += alpha * (sign * tgt.z - pq.z);
+			pq.w += alpha * (sign * tgt.w - pq.w);
+			const m = Math.sqrt(pq.x * pq.x + pq.y * pq.y + pq.z * pq.z + pq.w * pq.w);
+			if (m > 0) {
+				pq.x /= m;
+				pq.y /= m;
+				pq.z /= m;
+				pq.w /= m;
+			}
 		}
 
 		async function gyroAnimationLoop() {
 			const player = el as any;
-			if (!player) { gyroRafId = null; return; }
+			if (!player) {
+				gyroRafId = null;
+				return;
+			}
 
 			// (Re-)fetch puzzle object / vantage when missing or after a force-refresh
 			if (!gyroPuzzleObj || !gyroVantage || forceRefresh) {
@@ -375,8 +385,10 @@
 				const liveQ = bluetoothState.gyroQuatRef.current;
 				if (bluetoothState.gyroEnabled && liveQ) {
 					// Only drive the puzzle quaternion when gyro is actively enabled
-					targetQuat.x = liveQ.x; targetQuat.y = liveQ.y;
-					targetQuat.z = liveQ.z; targetQuat.w = liveQ.w;
+					targetQuat.x = liveQ.x;
+					targetQuat.y = liveQ.y;
+					targetQuat.z = liveQ.z;
+					targetQuat.w = liveQ.w;
 					slerpPuzzleQuatInPlace(gyroPuzzleObj.quaternion, targetQuat);
 					gyroVantage.render?.();
 				}
@@ -418,15 +430,15 @@
 					player.experimentalStickeringMaskOrbits = stickeringString;
 				}
 
-				if (enableF2LCheck && kpuzzle && staticData) {
+				if (enableSolveCheck && kpuzzle && staticData) {
 					// Use raw moves directly for F2L checking - they're already in absolute frame
-					await checkF2LState(
+					await checkSolveState(
 						{ kpuzzle },
 						scramble,
 						rawMovesAdded,
 						staticData.pieceToHide,
 						side,
-						onF2LSolved,
+						onPhaseSolved,
 						onCubeSolved,
 						stepId
 					);

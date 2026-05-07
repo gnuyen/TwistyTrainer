@@ -27,7 +27,7 @@ export const DEFAULT_SETTINGS: SessionSettings = {
 	trainAddAuf: true,
 	trainShowTimer: false,
 	trainHintAlgorithm: 'step',
-	trainHintStickering: 'f2l',
+	trainHintStickering: 'masked',
 	backView: 'none',
 	backViewEnabled: false,
 	crossColor: ['white'],
@@ -134,7 +134,7 @@ class SessionState {
 			name,
 			settings: JSON.parse(JSON.stringify({ ...DEFAULT_SETTINGS, ...settings })),
 			createdAt: Date.now(),
-			lastPlayedAt: Date.now(),
+			lastPlayedAt: 0, // No solves played yet
 			lastModified: Date.now(),
 			archived: false
 		};

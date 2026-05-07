@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { gernerateTrainCases } from './trainCases';
+import { generateTrainCases } from './trainCases';
 import type { SessionSettings } from './types/session';
 
 // Create a mutable settings object for tests
@@ -17,7 +17,7 @@ const createMockSettings = (): SessionSettings => ({
 	trainAddAuf: false,
 	trainShowTimer: false,
 	trainHintAlgorithm: 'step',
-	trainHintStickering: 'f2l',
+	trainHintStickering: 'masked',
 	backView: 'none',
 	backViewEnabled: false,
 	crossColor: ['white'],
@@ -85,7 +85,7 @@ vi.mock('./types/group', () => ({
 	}
 }));
 
-describe('gernerateTrainCases', () => {
+describe('generateTrainCases', () => {
 	beforeEach(() => {
 		// Reset mock settings to defaults
 		mockSettings = createMockSettings();
@@ -94,7 +94,7 @@ describe('gernerateTrainCases', () => {
 	});
 
 	it('should generate cases with equal frequency when smart frequency is disabled', () => {
-		const result = gernerateTrainCases();
+		const result = generateTrainCases();
 		// 3 cases selected, 1 side each -> 3 total
 		expect(result.length).toBe(3);
 		const counts = result.reduce(
@@ -124,7 +124,7 @@ describe('gernerateTrainCases', () => {
 			...Array(20).fill({ groupId: 'basic', caseId: 3, side: 'right', time: 100 })
 		);
 
-		const result = gernerateTrainCases();
+		const result = generateTrainCases();
 
 		const counts = result.reduce(
 			(acc, c) => {
@@ -161,7 +161,7 @@ describe('gernerateTrainCases', () => {
 			{ groupId: 'basic', caseId: 3, side: 'right', time: 200 }
 		);
 
-		const result = gernerateTrainCases();
+		const result = generateTrainCases();
 
 		const counts = result.reduce(
 			(acc, c) => {

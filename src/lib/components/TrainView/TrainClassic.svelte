@@ -155,6 +155,8 @@
 				const solveId = crypto.randomUUID();
 				// Save time and solve ID to the TrainCase
 				currentTrainCase.time = timeInCentiseconds;
+				// IMPORTANT: set solveId BEFORE calling onNext() so onNext() won't
+				// record a duplicate untimed solve (it checks solveId === undefined)
 				currentTrainCase.solveId = solveId;
 				// Update the last displayed time
 				trainState.lastDisplayedTime = timeInCentiseconds;
@@ -177,6 +179,7 @@
 				markAsSolved(true);
 			}
 		}
+		// NOTE: onNext() will NOT double-record because solveId was set above
 		onNext();
 	}
 

@@ -10,7 +10,7 @@
 	import type { Side } from '$lib/types/Side';
 	import type { StickerColor } from '$lib/types/stickering';
 	import type { Auf } from '$lib/types/trainCase';
-	import { concatinateAuf } from '$lib/utils/addAuf';
+	import { concatenateAuf } from '$lib/utils/addAuf';
 	import { simplifyAlg } from '$lib/utils/simplifyAlg';
 	import { PLL_ARROWS } from '$lib/data/pll_arrows';
 	import { CUBING_JS_COLORS, OPPOSITE_COLOR, SIDE_COLOR } from '$lib/types/stickering';
@@ -46,7 +46,7 @@
 		side,
 		crossColor = 'white',
 		frontColor = 'red',
-		stickering = 'f2l',
+		stickering = 'masked',
 		controlPanel = 'none',
 		scramble = $bindable(''),
 		alg = $bindable(''),
@@ -79,7 +79,7 @@
 
 	$effect(() => {
 		if (scrambleWithoutAUF !== undefined && algWithoutAUF !== undefined) {
-			const [newScramble, newAlg] = concatinateAuf(scrambleWithoutAUF, algWithoutAUF, auf);
+			const [newScramble, newAlg] = concatenateAuf(scrambleWithoutAUF, algWithoutAUF, auf);
 			scramble = newScramble;
 			alg = simplifyAlg(newAlg);
 		}
@@ -108,7 +108,7 @@
 
 	const stickeringString = $derived(
 		stepId === 'F2L'
-			? stickering === 'f2l' && staticData
+			? stickering === 'masked' && staticData
 				? getStickeringString(staticData.pieceToHide, side, crossColor, frontColor)
 				: undefined
 			: getLLStickeringString(crossColor, isOELL)

@@ -15,8 +15,8 @@ import { statisticsState } from './statisticsState.svelte';
 import type { Solve } from './types/statisticsState';
 import { sessionState, DEFAULT_SETTINGS } from '$lib/sessionState.svelte';
 
-export function gernerateTrainCases(): TrainCase[] {
-	// console.log('gernerateTrainCases() called');
+export function generateTrainCases(): TrainCase[] {
+	// console.log('generateTrainCases() called');
 	const result: TrainCase[] = [];
 
 	const sessionSettings = sessionState.activeSession?.settings;
@@ -267,7 +267,15 @@ export default class TrainCase {
 	private setRandomScramble() {
 		const staticData = casesStatic[this.#groupId][this.#caseId];
 		const scramblePool = getCaseScramblePool(staticData);
-		this.#scrambleSelection = Math.floor(Math.random() * scramblePool.length);
+		if (scramblePool.length === 0) {
+			console.warn(
+				`[TrainCase] Empty scramble pool for ${this.#groupId}/${this.#caseId}, ` +
+				`defaulting to selection 0`
+			);
+			this.#scrambleSelection = 0;
+		} else {
+			this.#scrambleSelection = Math.floor(Math.random() * scramblePool.length);
+		}
 	}
 
 	private setAuf() {

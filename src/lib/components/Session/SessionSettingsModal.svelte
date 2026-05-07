@@ -364,7 +364,9 @@
 									<Label class="mb-3 text-sm font-semibold">Handedness</Label>
 									<div class="space-y-2">
 										<Checkbox bind:checked={settings.trainSideSelection.left}>Left Handed</Checkbox>
-										<Checkbox bind:checked={settings.trainSideSelection.right}>Right Handed</Checkbox>
+										<Checkbox bind:checked={settings.trainSideSelection.right}
+											>Right Handed</Checkbox
+										>
 									</div>
 								</div>
 							</div>
@@ -486,17 +488,17 @@
 										<!-- svelte-ignore a11y_no_static_element_interactions -->
 										<div
 											class="flex cursor-pointer items-center justify-between gap-2 rounded-lg border p-3 transition-colors
-												{settings.trainHintStickering === 'f2l'
+												{settings.trainHintStickering === 'masked'
 												? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
 												: 'border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500'}"
-											onclick={() => (settings.trainHintStickering = 'f2l')}
+											onclick={() => (settings.trainHintStickering = 'masked')}
 										>
 											<div class="flex items-center gap-2">
-												<RadioDot selected={settings.trainHintStickering === 'f2l'} />
+												<RadioDot selected={settings.trainHintStickering === 'masked'} />
 												<span class="text-sm text-gray-900 dark:text-white">Masked Stickering</span>
 											</div>
 											<Button
-												id="btn-f2l-stickering-help"
+												id="btn-masked-stickering-help"
 												class="bg-transparent p-1 hover:bg-transparent focus:bg-transparent dark:bg-transparent dark:hover:bg-transparent dark:focus:bg-transparent"
 												type="button"
 												onclick={(e: MouseEvent) => e.stopPropagation()}
@@ -504,7 +506,7 @@
 												<CircleQuestionMark class="text-primary-600" />
 											</Button>
 											<Tooltip
-												triggeredBy="#btn-f2l-stickering-help"
+												triggeredBy="#btn-masked-stickering-help"
 												trigger="click"
 												class="p-2"
 												placement="left"
@@ -529,14 +531,14 @@
 										<!-- svelte-ignore a11y_no_static_element_interactions -->
 										<div
 											class="flex cursor-pointer items-center justify-between gap-2 rounded-lg border p-3 transition-colors
-												{settings.trainHintStickering === 'fully'
+												{settings.trainHintStickering === 'full'
 												? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
 												: 'border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500'}"
-											onclick={() => (settings.trainHintStickering = 'fully')}
+											onclick={() => (settings.trainHintStickering = 'full')}
 										>
 											<div class="flex items-center gap-2">
-												<RadioDot selected={settings.trainHintStickering === 'fully'} />
-												<span class="text-sm text-gray-900 dark:text-white">Fully Stickered</span>
+												<RadioDot selected={settings.trainHintStickering === 'full'} />
+												<span class="text-sm text-gray-900 dark:text-white">Full Stickering</span>
 											</div>
 											<Button
 												id="btn-fully-stickered-help"

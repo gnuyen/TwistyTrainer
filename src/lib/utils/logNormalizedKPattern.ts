@@ -98,14 +98,14 @@ export async function logNormalizedKPattern(
 		); */
 
 		// Check if F2L is solved
-		const f2lSolved = isF2LSolved(
+		const isSlotSolved = isF2LSolved(
 			normalizedPattern.patternData.CORNERS,
 			normalizedPattern.patternData.EDGES,
 			piecesToHide,
 			side
 		);
 
-		if (f2lSolved) {
+		if (isSlotSolved) {
 			console.log(
 				'%cF2L IS SOLVED!',
 				'color: #fff; background: #00ff00; font-size:1.5rem; font-weight: bold; padding: 8px 0; text-align: center;'

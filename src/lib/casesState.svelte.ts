@@ -106,14 +106,18 @@ if (persistedCasesState && typeof persistedCasesState === 'object') {
 
 			if (
 				persistedCase.algorithmSelection &&
-				typeof persistedCase.algorithmSelection === 'object' &&
-				algPoolLength > 0
+				typeof persistedCase.algorithmSelection === 'object'
 			) {
-				const validated: AlgorithmSelection = {
-					left: validateAlgorithmSelection(persistedCase.algorithmSelection.left, algPoolLength),
-					right: validateAlgorithmSelection(persistedCase.algorithmSelection.right, algPoolLength)
-				};
-				persistedCase.algorithmSelection = validated;
+				if (algPoolLength > 0) {
+					const validated: AlgorithmSelection = {
+						left: validateAlgorithmSelection(persistedCase.algorithmSelection.left, algPoolLength),
+						right: validateAlgorithmSelection(persistedCase.algorithmSelection.right, algPoolLength)
+					};
+					persistedCase.algorithmSelection = validated;
+				} else {
+					// Pool is empty — reset to defaults to avoid stale indices
+					persistedCase.algorithmSelection = { left: 0, right: 0 };
+				}
 			}
 
 			Object.assign(caseState, persistedCase);

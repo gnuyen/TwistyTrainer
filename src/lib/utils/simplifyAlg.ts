@@ -10,23 +10,20 @@
 type Axis = 'UD' | 'LR' | 'FB' | null;
 
 function getAxis(move: string): Axis {
-	// Handle wide moves explicitly if they are not standard base letters (though u/d/l/r/f/b usually used)
-	// Lowercase letters are usually wide moves in this codebase context or standard notation.
-	// But let's look at the first character primarily.
 	// If move contains brackets, treat it as having no axis (prevents simplification)
 	if (move.includes('(') || move.includes(')')) return null;
 
-	const firstChar = move.charAt(0).toUpperCase();
+	// Lowercase letters are wide moves (e.g., r, u, f). Wide moves include
+	// an implicit rotation and should NOT be simplified/cancelled with other
+	// moves on the same spatial axis, because the rotation changes orientation.
+	const firstChar = move.charAt(0);
+	if (['u', 'd', 'l', 'r', 'f', 'b'].includes(firstChar)) return null;
 
-	if (['U', 'D', 'E', 'Y'].includes(firstChar)) return 'UD';
-	if (['L', 'R', 'M', 'X'].includes(firstChar)) return 'LR';
-	if (['F', 'B', 'S', 'Z'].includes(firstChar)) return 'FB';
+	const upperChar = firstChar.toUpperCase();
 
-	// Handle lowercase starts (u, d, l, r, f, b)
-	const lowerChar = move.charAt(0);
-	if (['u', 'd'].includes(lowerChar)) return 'UD';
-	if (['l', 'r'].includes(lowerChar)) return 'LR';
-	if (['f', 'b'].includes(lowerChar)) return 'FB';
+	if (['U', 'D', 'E', 'Y'].includes(upperChar)) return 'UD';
+	if (['L', 'R', 'M', 'X'].includes(upperChar)) return 'LR';
+	if (['F', 'B', 'S', 'Z'].includes(upperChar)) return 'FB';
 
 	return null;
 }

@@ -14,7 +14,7 @@
 	import Settings from '$lib/components/Modals/Settings.svelte';
 	import EditAlg from '$lib/components/Modals/EditAlgModal.svelte';
 	import { casesStatic } from '$lib/casesStatic';
-	import { concatinateAuf } from '$lib/utils/addAuf';
+	import { concatenateAuf } from '$lib/utils/addAuf';
 	import HintButtonSmart from './HintButtonSmart.svelte';
 	import { globalState } from '$lib/globalState.svelte';
 	import { Pointer, Check, RotateCcw, Bluetooth, EllipsisVertical } from '@lucide/svelte';
@@ -562,7 +562,7 @@
 
 				// Add AUF to the algorithm
 				if (algWithoutAUF && scrambleWithoutAUF && auf !== undefined) {
-					const [, algWithAUF] = concatinateAuf(scrambleWithoutAUF, algWithoutAUF, auf);
+					const [, algWithAUF] = concatenateAuf(scrambleWithoutAUF, algWithoutAUF, auf);
 					displayAlg = simplifyAlg(algWithAUF);
 				} else {
 					displayAlg = '';
@@ -824,7 +824,7 @@
 				showVisibilityToggle={false}
 				tempoScale={5}
 				showAlg={false}
-				onF2LSolved={() => {
+				onPhaseSolved={() => {
 					// Prevent double triggering
 					if (isTransitioning) return;
 

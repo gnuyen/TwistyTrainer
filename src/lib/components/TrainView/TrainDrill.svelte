@@ -13,7 +13,7 @@
 	import Settings from '$lib/components/Modals/Settings.svelte';
 	import BluetoothModal from '$lib/components/Modals/BluetoothModal.svelte';
 	import { casesStatic } from '$lib/casesStatic';
-	import { concatinateAuf } from '$lib/utils/addAuf';
+	import { concatenateAuf } from '$lib/utils/addAuf';
 	import { globalState } from '$lib/globalState.svelte';
 
 	// Reset drill when session changes
@@ -21,8 +21,8 @@
 
 	// Reset drill when session changes
 	$effect(() => {
-		// Just accessing the ID tracks it
-		const _ = sessionState.activeSessionId;
+		// Track active session changes to reset drill state
+		const sessionId = sessionState.activeSessionId;
 		untrack(() => {
 			// Reset to stopped state
 			drillPhase = 'stopped';
@@ -201,7 +201,7 @@
 				const scrambleWithoutAUF = getCaseScramble(staticData, side, scrambleSelection);
 
 				if (algWithoutAUF && scrambleWithoutAUF && auf !== undefined) {
-					const [, algWithAUF] = concatinateAuf(scrambleWithoutAUF, algWithoutAUF, auf);
+					const [, algWithAUF] = concatenateAuf(scrambleWithoutAUF, algWithoutAUF, auf);
 					displayAlg = simplifyAlg(algWithAUF);
 				} else {
 					displayAlg = '';
@@ -257,7 +257,7 @@
 	/**
 	 * Called when F2L is solved - brief transition, then advance
 	 */
-	async function onF2LSolved() {
+	async function onPhaseSolved() {
 		if (drillPhase !== 'executing' && drillPhase !== 'solving') return;
 
 		// Stop timer and get times
@@ -503,10 +503,10 @@
 				showVisibilityToggle={false}
 				tempoScale={5}
 				showAlg={false}
-				onF2LSolved={() => {
+				onPhaseSolved={() => {
 					const shouldTrigger = alg && alg.trim() !== '';
 					if (shouldTrigger) {
-						onF2LSolved();
+						onPhaseSolved();
 					}
 				}}
 			/>

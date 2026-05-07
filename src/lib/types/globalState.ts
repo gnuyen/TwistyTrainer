@@ -1,9 +1,9 @@
 import type { GroupId, StepId } from './group';
 
-export type View = 'select' | 'train';
+export type View = 'select' | 'train' | 'timer';
 
 export type HintAlgorithm = 'step' | 'allAtOnce' | 'always';
-export type HintStickering = 'f2l' | 'fully';
+export type HintStickering = 'masked' | 'full';
 
 export interface GlobalState {
 	categoriesOpenedObj: Record<GroupId, boolean[]>;

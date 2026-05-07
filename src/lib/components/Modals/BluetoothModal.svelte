@@ -163,7 +163,7 @@
 						side="right"
 						crossColor="yellow"
 						frontColor="green"
-						stickering="fully"
+						stickering="full"
 						customAlgorithm={{ left: '', right: '' }}
 						algorithmSelection={{ left: null, right: null }}
 						controlPanel="none"
@@ -206,7 +206,13 @@
 						>
 							{#if editingCubeId === cube.id}
 								<div class="flex flex-1 flex-col gap-1.5">
-									<Input type="text" bind:value={editingCubeName} class="w-full" maxlength={40} placeholder="Cube name" />
+									<Input
+										type="text"
+										bind:value={editingCubeName}
+										class="w-full"
+										maxlength={40}
+										placeholder="Cube name"
+									/>
 									<Input
 										type="text"
 										bind:value={editingCubeMac}
